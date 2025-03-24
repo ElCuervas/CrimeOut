@@ -2,10 +2,10 @@
 
 # ▪ Miembros del equipo 
 
-* Orlando Caullan  
-* Nicolas Toledo  
-* Sebastian Aillapan  
-* Julio Contreras
+* Orlando Caullan (Lider Tecnico)
+* Nicolas Toledo  (Frontend)
+* Sebastian Aillapan (Backend)
+* Julio Contreras (Integración)
 
 # ▪ Análisis de la Problemática
 
@@ -29,7 +29,7 @@ La solución es una plataforma digital llamada “MercaOut” que permite a los 
 
 **Backend**: Implementación basada en Spring Boot, proporcionando un framework robusto para el desarrollo de APIs RESTful, gestión de autenticación y procesamiento de datos geoespaciales.
 
-**Seguridad**: Implementación de protocolos de cifrado end-to-end para garantizar el anonimato de los usuarios y la integridad de las comunicaciones.
+**Seguridad**: Encriptacion de contraseñas en la base de datos, garantizando la seguridad del usuario.
 
 ## Funcionalidades Principales
 
