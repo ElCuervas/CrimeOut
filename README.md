@@ -1,4 +1,4 @@
-# MercaOut: Sistema Integral de Reportes Anónimos para Mitigación del Microtráfico
+# CrimeOut: Sistema Integral de Reportes Anónimos para seguridad y ciudadanía
 
 # ▪ Miembros del equipo 
 
@@ -9,21 +9,17 @@
 
 # ▪ Análisis de la Problemática
 
-El microtráfico representa una amenaza significativa para la cohesión social en áreas residenciales, manifestándose no solo en la distribución de sustancias ilícitas, sino también en el incremento correlacional de actividades delictivas asociadas. La principal barrera para su mitigación radica en tres factores fundamentales:
+El comité Nevados Andinos sufre de varias problemáticas en su sector, nuestros colaboradores de la carrera de Trabajo Social nos dieron a conocer casos como sitios tomados para actividades ilícitas, maltrato animal en vecindarios, necesidad de prevenir el consumo de drogas en menores de edad y micro basurales, además de una presunta desconfianza por parte de la comunidad a carabineros.
 
-**Falta de Denuncias**: Muchos vecinos no denuncian actividades sospechosas debido al miedo a represalias por parte de los delincuentes.
+Se necesita un enfoque que permita a la comunidad contar con una herramienta útil para afrontar sus problemáticas en base a la colaboración vecinal, haciendo que los vecinos reporten crímenes de forma anónima en su sector, con el fin de que la municipalidad tome cartas en el asunto.
 
-**Descoordinación**: Las autoridades no siempre tienen acceso a información precisa y oportuna para actuar de manera efectiva.
+# ▪ Solución Propuesta: ”CrimeOut”
 
-**Desorganización Comunitaria**: La falta de herramientas para organizarse y colaborar entre los vecinos dificulta la creación de estrategias comunitarias para combatir el microtráfico.
-
-# ▪ Solución Propuesta: ”MercaOut”
-
-La solución es una plataforma digital llamada “MercaOut” que permite a los vecinos reportar incidentes de manera anónima y segura. La plataforma incluye las siguientes características:
+La solución es una plataforma digital llamada “CrimeOut” que permite a los vecinos reportar incidentes de manera anónima y segura. La plataforma incluye las siguientes características:
 
 ## Arquitectura de la Solución
 
-"MercaOut" se implementará como una aplicación para la plataforma android con las siguientes características técnicas:
+"CrimeOut" se implementará como una aplicación para la plataforma android con las siguientes características técnicas:
 
 **Frontend**: Desarrollo nativo en Android Studio para dispositivos móviles, optimizando la experiencia de usuario y el rendimiento en dispositivos de gama media-baja.
 
@@ -33,17 +29,17 @@ La solución es una plataforma digital llamada “MercaOut” que permite a los 
 
 ## Funcionalidades Principales
 
-**Sistema de Reportes Anónimos**: Mecanismo de transmisión de información que garantiza la imposibilidad de identificación entre usuarios, implementando técnicas avanzadas de ofuscación de datos. Sin embargo, por temas de comprobación de incidentes, los datos personales pueden ser compartidos solo con las autoridades pertinentes y/o los municipios respectivos.
+**Sistema de Reportes Anónimos**: Mecanismo de transmisión de información que garantiza la imposibilidad de identificación entre usuarios, implementando técnicas avanzadas de ofuscación de datos. Sin embargo, por temas de comprobación de incidentes, los datos personales pueden ser compartidos solo con los administradores.
 
 **Módulo de Geolocalización**: Integración con APIs de servicios de mapas para la localización precisa de incidentes, con sistemas de agrupamiento de datos con el objetivo de marcar zonas con mayor presencia de incidentes.
 
-**Interfaz de Comunicación Institucional**: Canales seguros para la transmisión de información a las autoridades competentes, con sistemas de verificación y priorización de incidentes.
+**Gestion de reportes**: Canales seguros en la manipulacion de reportes para las autoridades municipales, con el fin de que se mitiguen los actos delictivos al tomar cartas en el asunto.
 
 ## Público Objetivo
 
 **Residentes**: Habitantes de zonas afectadas por microtráfico que buscan mecanismos seguros de denuncia y organización comunitaria.
 
-**Entidades de Seguridad Pública**: Cuerpos policiales y organismos municipales responsables de la prevención y persecución del delito.
+**Entidades Municipales**: Organismos municipales responsables del manejo de incidentes en el sector respectivo.
 
 **Organizaciones de Base Comunitaria**: Entidades formales e informales dedicadas al fortalecimiento del tejido social y la promoción de la seguridad ciudadana.
 
@@ -55,7 +51,7 @@ La solución es una plataforma digital llamada “MercaOut” que permite a los 
 * Interfaz intuitiva que minimiza la barrera tecnológica  
 * Retroalimentación sobre el procesamiento de reportes
 
-**Para Entidades de Seguridad:**
+**Para Entidades Municipales:**
 
 * Inteligencia territorial en tiempo real  
 * Optimización de recursos mediante priorización algorítmica  
@@ -63,12 +59,12 @@ La solución es una plataforma digital llamada “MercaOut” que permite a los 
 
 **Para Organizaciones Comunitarias:** 
 
-* Visualización de microtráfico en su área de influencia  
+* Visualización de incidentes delictivos en su área de influencia  
 * Capacidad de implementar estrategias focalizadas
 
 ## Impacto Social
 
-La implementación de "MercaOut" proyecta resultados mensurables en tres dimensiones fundamentales:
+La implementación de "CrimeOut" proyecta resultados mensurables en tres dimensiones fundamentales:
 
 Incremento en la Tasa de Denuncias: Se estima un aumento significativo en el reporte de actividades sospechosas, generando un mapa de calor de zonas críticas.
 
