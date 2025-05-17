@@ -23,7 +23,7 @@ public class Reporte {
     @JoinColumn(name = "id_tipo_reporte", nullable = false)
     private TipoReporte tipoReporte;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
