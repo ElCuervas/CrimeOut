@@ -33,8 +33,12 @@ public class Usuario implements UserDetails {
     private boolean baneado = false;
     private LocalDate vetado;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Reporte> reportes;
+
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority((rol.name())));
