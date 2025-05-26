@@ -8,7 +8,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 class AuthRepositoryImpl implements AuthRepository {
-  final String _baseUrl = 'http://10.0.2.2:8080/api'; // Ajustar según entorno
+  final String _baseUrl = 'http://10.0.2.2:8080/api/v1/crimeout/auth'; // Ajustar según entorno
 
   @override
   Future<void> registerUser({
@@ -17,7 +17,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String name,
     required String rut,
   }) async {
-    final url = Uri.parse('$_baseUrl/usuarios');
+    final url = Uri.parse('$_baseUrl/register');
     final body = jsonEncode({
       'email': email,
       'password': password,
