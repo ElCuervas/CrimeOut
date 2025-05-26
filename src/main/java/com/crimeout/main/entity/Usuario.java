@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name="usuario", uniqueConstraints = {@UniqueConstraint(columnNames = {"rut"})})
 public class Usuario implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
     @Column(nullable = false)
@@ -30,9 +30,12 @@ public class Usuario implements UserDetails {
     private String contrasena;
     private String nombre;
     private String correo;
+    @Column(nullable = true)
     private boolean baneado = false;
+    @Column(nullable = true)
     private LocalDate vetado;
 
+    @Column(nullable = true)
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Reporte> reportes;
 
