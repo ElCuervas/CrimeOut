@@ -19,7 +19,7 @@ public class Reporte {
     @Column(name = "id_reporte")
     private Integer idReporte;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
     @JoinColumn(name = "id_tipo_reporte", nullable = false)
     private TipoReporte tipoReporte;
 
@@ -33,9 +33,8 @@ public class Reporte {
     @Column(name = "fecha")
     private LocalDateTime fecha;
 
-    @Lob
     @Column(name = "imagen")
-    private byte[] imagen;
+    private String imagen;
 
     @Column(name = "detalles", length = 250)
     private String detalles;
