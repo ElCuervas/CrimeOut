@@ -38,6 +38,7 @@ dependencies:
   flutter_vector_icons: ^2.0.0
   dio: ^5.4.1
   http: ^0.13.6
+  flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
   flutter_test:

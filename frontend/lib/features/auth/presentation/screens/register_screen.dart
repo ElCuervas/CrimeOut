@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/utils/rut_validator.dart';
-import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/features/auth/presentation/providers/register_provider.dart';
 
 class RegisterScreen extends StatelessWidget {
