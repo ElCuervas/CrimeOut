@@ -12,15 +12,15 @@ class RegisterUserUseCase {
   RegisterUserUseCase(this.repository);
 
   Future<void> execute({
-    required String email,
+    required String correo,
     required String password,
-    required String name,
+    required String nombre,
     required String rut,
   }) async {
     await repository.registerUser(
-      email: email,
+      correo: correo,
       password: password,
-      name: name,
+      nombre: nombre,
       rut: rut,
     );
   }

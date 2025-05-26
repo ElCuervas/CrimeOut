@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _toggleKeepSigned(bool? v) => setState(() => _keepSigned = v ?? false);
 
   Future<void> _onLogin() async {
-    // aquí llamas a tu AuthService...
+    
   }
 
   @override
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-/// Reutilizamos el mismo WaveClipper
+
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

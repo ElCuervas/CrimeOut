@@ -95,10 +95,10 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     if (_formKey.currentState!.validate()) {
       final notifier = ref.read(registerProvider.notifier);
       await notifier.register(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        name: _nameController.text.trim(),
+        correo: _emailController.text.trim(),
         rut: _rutController.text.trim(),
+        nombre: _nameController.text.trim(),
+        password: _passwordController.text.trim(),
       );
     }
   }
@@ -146,7 +146,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
               prefixIcon: Icon(MaterialCommunityIcons.card_account_details),
             ),
             validator: (value) {
-              if (value == null || !isValidRut(value)) {
+              if (value == null || isValidRut(value)) {
                 return 'RUT inválido';
               }
               return null;
