@@ -11,17 +11,17 @@ class RegisterNotifier extends StateNotifier<AsyncValue<void>> {
   RegisterNotifier(this._useCase) : super(const AsyncData(null));
 
   Future<void> register({
-    required String email,
+    required String correo,
     required String password,
-    required String name,
+    required String nombre,
     required String rut,
   }) async {
     state = const AsyncLoading();
     try {
       await _useCase.execute(
-        email: email,
+        correo: correo,
         password: password,
-        name: name,
+        nombre: nombre,
         rut: rut,
       );
       state = const AsyncData(null);

@@ -12,16 +12,16 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> registerUser({
-    required String email,
+    required String correo,
     required String password,
-    required String name,
+    required String nombre,
     required String rut,
   }) async {
     final url = Uri.parse('$_baseUrl/register');
     final body = jsonEncode({
-      'email': email,
+      'correo': correo,
       'password': password,
-      'name': name,
+      'nombre': nombre,
       'rut': rut,
     });
 
