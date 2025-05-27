@@ -9,6 +9,7 @@ import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,10 +24,11 @@ public class AuthService{
     private final JwtService jwtService;
 
     public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getRut(), request.getPassword()));
         UserDetails user=userRepository.findByRut(request.getRut()).orElseThrow();
-        String nombre=user.getUsername();
+        String token=jwtService.getToken(user);
         return AuthResponse.builder()
-                .token("Simulacion de token" + nombre)
+                .token(token)
                 .build();
     }
     public AuthResponse register(RegisterRequest request) {

@@ -5,6 +5,7 @@ import com.crimeout.main.dto.LoginRequest;
 import com.crimeout.main.dto.RegisterRequest;
 import com.crimeout.main.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authService.login(request).getToken())
+                .build();
     }
 
     @PostMapping("/logout")
