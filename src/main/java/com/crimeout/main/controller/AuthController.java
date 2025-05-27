@@ -1,5 +1,6 @@
 package com.crimeout.main.controller;
 
+import com.crimeout.main.dto.AuthResponse;
 import com.crimeout.main.dto.LoginRequest;
 import com.crimeout.main.dto.RegisterRequest;
 import com.crimeout.main.service.AuthService;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
