@@ -15,6 +15,10 @@ public class UsuarioServicio {
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
+    public Usuario findById(Integer id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
     public Usuario findByUsername(String rut) {
         return usuarioRepository.findByRut(rut)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
