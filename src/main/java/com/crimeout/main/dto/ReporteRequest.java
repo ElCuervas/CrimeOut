@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReporteRequest {
     String tipoReporte;
-    Integer usuarioId;
     String ubicacion;
     String imagen;
     String detalles;
