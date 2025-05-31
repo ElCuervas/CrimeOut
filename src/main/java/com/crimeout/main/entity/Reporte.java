@@ -29,7 +29,7 @@ public class Reporte {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    @Column(name = "ubicacion", length = 100)
+    @Column(name = "ubicacion", columnDefinition = "TEXT")
     private String ubicacion;
 
     @Column(name = "fecha")

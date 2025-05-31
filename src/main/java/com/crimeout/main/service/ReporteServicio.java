@@ -6,6 +6,8 @@ import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
 import com.crimeout.main.repository.ReporteRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,21 @@ import java.util.List;
 public class ReporteServicio {
     private final ReporteRepository reporteRepository;
     private final UsuarioServicio usuarioServicio;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     public ResponseEntity<?> crearReporte(ReporteRequest request, Integer userId) {
         Boolean estado=false;
         Usuario user = usuarioServicio.findById(userId);
+        String ubicacion;
+        try {
+            ubicacion = objectMapper.writeValueAsString(request.getUbicacion());
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Error al procesar la ubicación");
+        }
         Reporte reporte = Reporte.builder()
                 .tipoReporte(TipoReporte.valueOf(request.getTipoReporte()))
                 .usuario(user)
-                .ubicacion(request.getUbicacion())
+                .ubicacion(ubicacion)
                 .fecha(LocalDateTime.now())
                 .imagen(request.getImagen())
                 .detalles(request.getDetalles())
@@ -41,16 +51,26 @@ public class ReporteServicio {
     public ResponseEntity<List<UbicacionReporteResponse>> ubicacionReportes() {
         List<Reporte> reportes = reporteRepository.findAll();
         List<UbicacionReporteResponse> ubicacionReporteList = reportes.stream()
-            .map(reporte -> UbicacionReporteResponse.builder()
-                .tipoReporte(reporte.getTipoReporte().name())
-                .ubicacion(reporte.getUbicacion())
-                .fecha(reporte.getFecha())
-                .imagen(reporte.getImagen())
-                .detalles(reporte.getDetalles())
-                .confiable(reporte.getConfiable())
-                .solucionado(reporte.getSolucionado())
-                .build())
-            .toList();
+                .map(reporte -> {
+                    List<Double> ubicacion = new ArrayList<>();
+                    try {
+                        ubicacion = objectMapper.readValue(
+                                reporte.getUbicacion(),
+                                new com.fasterxml.jackson.core.type.TypeReference<>() {
+                                }
+                        );
+                    } catch (Exception ignored) {}
+                    return UbicacionReporteResponse.builder()
+                            .tipoReporte(reporte.getTipoReporte().name())
+                            .ubicacion(ubicacion)
+                            .fecha(reporte.getFecha())
+                            .imagen(reporte.getImagen())
+                            .detalles(reporte.getDetalles())
+                            .confiable(reporte.getConfiable())
+                            .solucionado(reporte.getSolucionado())
+                            .build();
+                })
+                .toList();
         return ResponseEntity.ok(ubicacionReporteList);
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UbicacionReporteResponse {
     String tipoReporte;
-    String ubicacion;
+    List<Double> ubicacion;
     LocalDateTime fecha;
     String imagen;
     String detalles;
