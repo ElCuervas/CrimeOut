@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,5 +16,9 @@ public class ReporteController {
     @PostMapping("/user/{id}/reporte")
     public ResponseEntity<?> crearReporte(@PathVariable("id") Integer userId, @RequestBody ReporteRequest request) {
         return ResponseEntity.ok(reporteServicio.crearReporte(request, userId));
+    }
+    @GetMapping("/reportes")
+    public ResponseEntity<?> ubicacionReportes() {
+        return reporteServicio.ubicacionReportes();
     }
 }
