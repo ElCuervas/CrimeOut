@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/features/reports/presentation/screens/reporte_mapa_screen.dart';
 import 'package:frontend/features/reports/presentation/screens/seleccionar_reporte_screen.dart';
 import 'package:frontend/features/reports/presentation/screens/seleccionar_ubicacion_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
 
 
 Future<void> main() async {
@@ -25,8 +26,9 @@ class CrimeOutApp extends StatelessWidget {
   debugShowCheckedModeBanner: false,
   title: 'CrimeOut',
   theme: ThemeData(primarySwatch: Colors.deepPurple),
-  initialRoute: '/reporte-mapa', 
+  initialRoute: '/login',
   routes: {
+    '/login': (context) => const LoginScreen(),
     '/registro': (context) => const RegisterScreen(),
     '/reporte-mapa': (context) => const ReporteMapaScreen(),
     '/seleccionar-tipo': (context) => const SeleccionarReporteScreen(),
