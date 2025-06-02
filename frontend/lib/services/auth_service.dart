@@ -18,7 +18,7 @@ class AuthService {
   ));
   final _storage = const FlutterSecureStorage();
 
-  Future<LoginResponse> login(LoginRequest req) async {
+    Future<LoginResponse> login(LoginRequest req) async {
     try {
       final resp = await _dio.post(
         '/auth/login',
@@ -27,7 +27,11 @@ class AuthService {
 
       final body = resp.data as Map<String, dynamic>;
       final loginResp = LoginResponse.fromJson(body);
+
+      // Guardar token e ID en almacenamiento seguro
       await _storage.write(key: 'jwt_token', value: loginResp.token);
+      await _storage.write(key: 'user_id', value: loginResp.idUsuario.toString());
+
       return loginResp;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {

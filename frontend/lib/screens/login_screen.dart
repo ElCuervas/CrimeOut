@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/auth_service.dart';
+import 'package:frontend/models/auth_models.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   static const routeName = '/login';
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _rutCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscure = true;
@@ -20,6 +23,21 @@ class _LoginScreenState extends State<LoginScreen> {
   void _toggleKeepSigned(bool? v) => setState(() => _keepSigned = v ?? false);
 
   Future<void> _onLogin() async {
+    setState(() => _error = null);
+  try {
+    final authService = ref.read(authServiceProvider);
+    final request = LoginRequest(
+      rut: _rutCtrl.text.trim(),
+      contrasena: _passCtrl.text.trim(),
+    );
+
+    final response = await authService.login(request);
+
+    // Si llega aquí, login fue exitoso, redirigimos
+    Navigator.pushReplacementNamed(context, '/mapa-principal');
+  } catch (e) {
+    setState(() => _error = e.toString());
+  }
     
   }
 
