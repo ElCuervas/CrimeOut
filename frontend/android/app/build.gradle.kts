@@ -4,7 +4,7 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
-
+val MAPS_API_KEY: String by project
 android {
     namespace = "com.example.frontend"
     compileSdk = flutter.compileSdkVersion
@@ -28,6 +28,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        resValue("string", "google_maps_key", MAPS_API_KEY)
     }
 
     buildTypes {
