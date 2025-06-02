@@ -28,12 +28,14 @@ class ReporteRepositoryImpl implements ReporteRepository {
   ///   - [userId]: Identificador del usuario que realiza el reporte.
   @override
   Future<void> crearReporte(ReporteRequest request, int userId) async {
+
     final response = await client.post(
       Uri.parse('$baseUrl/api/v1/crimeout/user/$userId/reporte'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(request.toJson()),
     );
-
+    print('📤 Enviando reporte a: $baseUrl/api/v1/crimeout/user/$userId/reporte');
+    print('📦 Payload: $request');
     if (response.statusCode != 200) {
       throw Exception('Error al enviar el reporte');
     }

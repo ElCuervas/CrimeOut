@@ -17,7 +17,7 @@ class CrearReporteUseCase {
   /// - [userId]: identificador del usuario que crea el reporte.
   ///
   /// Lanza una excepción si el backend responde con error.
-  Future<void> call(ReporteRequest request, int userId) {
-    return repository.crearReporte(request, userId);
+  Future<void> call(ReporteRequest request, int userId) async {
+    await repository.crearReporte(request, userId);
   }
 }

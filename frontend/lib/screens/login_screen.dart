@@ -34,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final response = await authService.login(request);
 
     // Si llega aquí, login fue exitoso, redirigimos
-    Navigator.pushReplacementNamed(context, '/mapa-principal');
+    Navigator.pushReplacementNamed(context, '/reporte-mapa');
   } catch (e) {
     setState(() => _error = e.toString());
   }
@@ -136,7 +136,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 16),
                     Center(
                       child: TextButton(
-                        onPressed: () {/* TODO: registro */},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/registro');
+                        },
                         child: const Text('¿No tienes cuenta? Regístrate'),
                       ),
                     ),

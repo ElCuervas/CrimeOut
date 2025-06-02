@@ -12,11 +12,10 @@ import 'package:frontend/screens/providers/userIdProvider.dart';
 /// [ReporteRequest] y ejecuta el caso de uso [CrearReporteUseCase].
 final crearReporteProvider = FutureProvider<void>((ref) async {
   final tipo = ref.read(tipoReporteSeleccionadoProvider);
-  final ubicacion = ref.read(ubicacionSeleccionadaProvider);
   final detalles = ref.read(detallesReporteProvider);
   final imagen = ref.read(imagenReporteProvider);
 
-  final userId = await ref.read(userIdProvider.future);
+  final userId = await ref.read(userIdProvider.future) as int;
 
   if (tipo == null || ubicacion == null) {
     throw Exception('Faltan datos del reporte');
@@ -24,18 +23,15 @@ final crearReporteProvider = FutureProvider<void>((ref) async {
 
   // Construcción del objeto ReporteRequest con formato esperado por el backend
   final reporte = ReporteRequest(
-    idUsuario: userId,
     tipoReporte: tipo,
     latitud: ubicacion[0],
     longitud: ubicacion[1],
     imagen: imagen ?? '',
-    detalles: detalles ?? '',
-    fecha: DateTime.now().toIso8601String(),
-    confiable: false,
-    solucionado: false,
+    detalles: detalles ?? ''
   );
 
   // Ejecutar caso de uso para enviar el reporte
   final useCase = ref.read(crearReporteUseCaseProvider);
   await useCase(reporte, userId);
+  ref.invalidate(reportesMapaProvider);
 });

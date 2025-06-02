@@ -6,24 +6,24 @@ class LoginRequest {
 
   Map<String, dynamic> toJson() => {
         'rut': rut,
-        'contrasena': contrasena,
+        'password': contrasena,
       };
 }
 
 class LoginResponse {
-  final List<String> roles;
+  final String role;
   final String token;
   final int idUsuario;
 
   LoginResponse({
-    required this.roles,
+    required this.role,
     required this.token,
     required this.idUsuario,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      roles: List<String>.from(json['roles'] ?? []),
+      role: json['role'] as String,
       token: json['token'] as String,
       idUsuario: json['idUsuario'] as int,
     );

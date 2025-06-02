@@ -16,10 +16,10 @@ class IconosReportes {
   /// ```
   static Future<Map<String, BitmapDescriptor>> cargarIconos() async {
     return {
-      'ACTIVIDAD_ILICITA': await _cargar('assets/icons/actividad_ilicita.png'),
-      'MALTRATO_ANIMAL': await _cargar('assets/icons/maltrato_animal.png'),
-      'BASURAL': await _cargar('assets/icons/basural.png'),
-      'MICROTRAFICO': await _cargar('assets/icons/microtrafico.png'),
+      'ACTIVIDAD_ILICITA': await _cargar('icons/actividad_ilicita.png'),
+      'MALTRATO_ANIMAL': await _cargar('icons/maltrato_animal.png'),
+      'BASURAL': await _cargar('icons/basural.png'),
+      'MICROTRAFICO': await _cargar('icons/microtrafico.png'),
     };
   }
 
@@ -30,7 +30,7 @@ class IconosReportes {
   /// Retorna un [Future] que contiene el [BitmapDescriptor] correspondiente.
   static Future<BitmapDescriptor> _cargar(String path) async {
     return await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(64, 64)),
+      const ImageConfiguration(size: Size(256, 256)),
       path,
     );
   }

@@ -3,6 +3,7 @@ import '../../domain/entities/reporte_request.dart';
 import '../../domain/usecases/providers/crear_reporte_usecase_provider.dart';
 import '../../domain/usecases/providers/obtener_reportes_usecase_provider.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
+import 'package:frontend/screens/providers/userIdProvider.dart';
 
 /// Provider que almacena el tipo de reporte seleccionado por el usuario.
 ///
@@ -36,22 +37,18 @@ final crearReporteProvider = FutureProvider<void>((ref) async {
   final detalles = ref.read(detallesReporteProvider);
   final imagen = ref.read(imagenReporteProvider);
 
-  const int userId = 1; // Temporal: reemplazar cuando login funcione
+  final userId = await ref.read(userIdProvider.future) as int;
 
   if (tipo == null || ubicacion == null) {
     throw Exception('Faltan datos del reporte');
   }
 
   final reporte = ReporteRequest(
-    idUsuario: userId,
     tipoReporte: tipo,
     latitud: ubicacion[0],
     longitud: ubicacion[1],
     imagen: imagen ?? '',
-    detalles: detalles ?? '',
-    fecha: DateTime.now().toIso8601String(),
-    confiable: false,
-    solucionado: false,
+    detalles: detalles ?? ''
   );
 
   final useCase = ref.read(crearReporteUseCaseProvider);

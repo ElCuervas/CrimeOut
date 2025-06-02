@@ -20,11 +20,12 @@ class AuthService {
 
     Future<LoginResponse> login(LoginRequest req) async {
     try {
+      print('Login request: ${jsonEncode(req.toJson())}');
+
       final resp = await _dio.post(
         '/auth/login',
         data: jsonEncode(req.toJson()),
       );
-
       final body = resp.data as Map<String, dynamic>;
       final loginResp = LoginResponse.fromJson(body);
 

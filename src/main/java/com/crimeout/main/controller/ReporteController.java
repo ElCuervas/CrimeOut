@@ -1,20 +1,20 @@
 package com.crimeout.main.controller;
 
 import com.crimeout.main.dto.ReporteRequest;
-import com.crimeout.main.dto.UbicacionReporteResponse;
+import org.springframework.stereotype.Controller;
 import com.crimeout.main.service.ReporteServicio;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
  * Controlador para la gestión de reportes.
  */
-@RestController
-@RequestMapping("/api/reportes")
+@Controller
 @RequiredArgsConstructor
+@RequestMapping(value = "/api/v1/crimeout", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReporteController {
 
     /**
@@ -29,18 +29,17 @@ public class ReporteController {
      * @param userId ID del usuario que realiza el reporte
      * @return respuesta HTTP indicando el resultado de la operación
      */
-    @PostMapping("/crear")
-    public ResponseEntity<?> crearReporte(@RequestBody ReporteRequest request, @RequestParam Integer userId) {
-        return reporteServicio.crearReporte(request, userId);
+    @PostMapping("/user/{id}/reporte")
+    public ResponseEntity<?> crearReporte(@PathVariable("id") Integer userId, @RequestBody ReporteRequest request) {
+        return ResponseEntity.ok(reporteServicio.crearReporte(request, userId));
     }
-
     /**
-     * Obtiene la lista de ubicaciones de todos los reportes.
+     * Obtiene la lista de todos los reportes para ubicacion.
      *
-     * @return respuesta HTTP con la lista de ubicaciones de los reportes
+     * @return respuesta HTTP con la lista de todos los reportes para ubicacion
      */
-    @GetMapping("/ubicaciones")
-    public ResponseEntity<List<UbicacionReporteResponse>> ubicacionReportes() {
+    @GetMapping("/reportes")
+    public ResponseEntity<?> ubicacionReportes() {
         return reporteServicio.ubicacionReportes();
     }
 }

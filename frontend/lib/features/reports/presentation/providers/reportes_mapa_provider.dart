@@ -11,5 +11,5 @@ import '../../domain/usecases/providers/obtener_reportes_usecase_provider.dart';
 /// Se utiliza en la Vista 1 (pantalla principal del mapa).
 final reportesMapaProvider = FutureProvider<List<UbicacionReporte>>((ref) async {
   final useCase = ref.read(obtenerReportesMapaUseCaseProvider);
-  return useCase();
+  return await repo.obtenerReportesMapa();
 });

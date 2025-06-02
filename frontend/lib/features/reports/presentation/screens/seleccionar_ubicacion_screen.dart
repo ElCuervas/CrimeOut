@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../providers/reporte_providers.dart';
 import 'package:frontend/screens/providers/userIdProvider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter/foundation.dart';
 
 class SeleccionarUbicacion extends ConsumerStatefulWidget {
   const SeleccionarUbicacion({super.key});
@@ -140,26 +142,27 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
                     // Botón para seleccionar imagen
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF2E2E3E),
+                        backgroundColor: const Color(0xFF2E2E3E),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                       ),
                       onPressed: () async {
-                        // Usa image_picker para tomar foto o seleccionar galería
                         final picker = ImagePicker();
                         final XFile? foto = await picker.pickImage(source: ImageSource.camera);
                         if (foto != null) {
-                          final bytes = await foto.readAsBytes();
-                          final base64Img = base64Encode(bytes);
-
-                          ref.read(imagenReporteProvider.notifier).state = base64Img;
+                          try {
+                            final base64Img = await compute(_comprimirYCodificar, foto.path);
+                            ref.read(imagenReporteProvider.notifier).state = base64Img;
+                          } catch (e) {
+                            print('Error al procesar la imagen: $e');
+                          }
                         }
                       },
-                      icon: Icon(Icons.image),
-                      label: Text('Añadir Imagen'),
+                      icon: const Icon(Icons.image),
+                      label: const Text('Añadir Imagen'),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     // Campo de texto para detalles
                     TextField(
@@ -167,7 +170,7 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
                       maxLines: 4,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        hintText: 'Placeholder',
+                        hintText: 'Describe los detalles del incidente...',
                       ),
                       onChanged: (value) {
                         ref.read(detallesReporteProvider.notifier).state = value;
@@ -176,6 +179,7 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
                   ],
                 ),
               ),
+
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -198,19 +202,34 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
   }
 
   /// Envía el reporte al backend (invoca al provider FutureProvider)
-  Future<void> _enviarReporte() async {
-  try {
-    await ref.read(crearReporteProvider.future);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Reporte enviado con éxito')),
-    );
-    Navigator.popUntil(context, ModalRoute.withName('/mapa-principal'));
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al enviar: ${e.toString()}')),
-    );
+  void _enviarReporte() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Crear el reporte
+      await ref.read(crearReporteProvider.future);
+
+      // Forzar recarga del mapa al volver
+      ref.invalidate(reportesMapaProvider);
+
+      Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/reporte-mapa',
+              (route) => false,
+      );
+
+      // Mostrar confirmación (opcional)
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Reporte enviado con éxito')),
+      );
+
+    } catch (e) {
+      // Mostrar error si algo falla
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Error al enviar reporte: $e')),
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -305,6 +324,17 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
         },
       ),
     );
+  }
+  Future<String> _comprimirYCodificar(String path) async {
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      path,
+      quality: 60,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) throw Exception('Error al comprimir imagen');
+
+    return base64Encode(compressedBytes);
   }
 
   @override

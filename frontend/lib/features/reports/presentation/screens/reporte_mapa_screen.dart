@@ -39,12 +39,20 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
     if (permiso == LocationPermission.denied) {
       permiso = await Geolocator.requestPermission();
     }
-
     final pos = await Geolocator.getCurrentPosition();
+    final double lat = pos.latitude;
+    final double lng = pos.longitude;
+    final bounds = LatLngBounds(
+      southwest: LatLng(lat - 0.0045, lng - 0.0045),
+      northeast: LatLng(lat + 0.0045, lng + 0.0045),
+    );
     setState(() {
       _ubicacionUsuario = LatLng(pos.latitude, pos.longitude);
+      _limitesMapa = bounds;
     });
   }
+
+  LatLngBounds? _limitesMapa;
 
   Marker _crearMarkerDesdeReporte(UbicacionReporte r, int index) {
     final position = LatLng(r.ubicacion[0], r.ubicacion[1]);
@@ -90,6 +98,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
                     target: _ubicacionUsuario!,
                     zoom: 16,
                   ),
+                  cameraTargetBounds: CameraTargetBounds(_limitesMapa),
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
                   markers: markers,

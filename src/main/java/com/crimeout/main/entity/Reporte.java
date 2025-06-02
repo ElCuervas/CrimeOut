@@ -56,7 +56,7 @@ public class Reporte {
     /**
      * Imagen asociada al reporte.
      */
-    @Column(name = "imagen")
+    @Column(name = "imagen",  columnDefinition = "TEXT")
     private String imagen;
 
     /**
@@ -76,4 +76,6 @@ public class Reporte {
      */
     @Column(name = "solucionado", columnDefinition = "TINYINT(1)")
     private Boolean solucionado;
+
+
 }
