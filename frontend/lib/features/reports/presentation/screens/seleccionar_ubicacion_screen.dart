@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../providers/reporte_providers.dart';
+import 'package:frontend/screens/providers/userIdProvider.dart';
 
 class SeleccionarUbicacion extends ConsumerStatefulWidget {
   const SeleccionarUbicacion({super.key});
@@ -198,21 +199,18 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
 
   /// Envía el reporte al backend (invoca al provider FutureProvider)
   Future<void> _enviarReporte() async {
-    try {
-      // Lanza el FutureProvider de crearReporteProvider
-      await ref.read(crearReporteProvider.future);
-      // Si llega aquí, se envió correctamente
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Reporte enviado con éxito')),
-      );
-      // Podrías limpiar el estado o volver a la vista principal
-      Navigator.popUntil(context, ModalRoute.withName('/mapa-principal'));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al enviar: ${e.toString()}')),
-      );
-    }
+  try {
+    await ref.read(crearReporteProvider.future);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Reporte enviado con éxito')),
+    );
+    Navigator.popUntil(context, ModalRoute.withName('/mapa-principal'));
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error al enviar: ${e.toString()}')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {

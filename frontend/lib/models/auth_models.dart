@@ -13,13 +13,19 @@ class LoginRequest {
 class LoginResponse {
   final List<String> roles;
   final String token;
+  final int idUsuario;
 
-  LoginResponse({required this.roles, required this.token});
+  LoginResponse({
+    required this.roles,
+    required this.token,
+    required this.idUsuario,
+  });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
       roles: List<String>.from(json['roles'] ?? []),
       token: json['token'] as String,
+      idUsuario: json['idUsuario'] as int,
     );
   }
 }
