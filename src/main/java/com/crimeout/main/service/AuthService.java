@@ -25,9 +25,11 @@ public class AuthService{
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getRut(), request.getPassword()));
-        UserDetails user=userRepository.findByRut(request.getRut()).orElseThrow();
+        Usuario user=userRepository.findByRut(request.getRut()).orElseThrow();
         String token=jwtService.getToken(user);
         return AuthResponse.builder()
+                .idUsuario(user.getId())
+                .role(String.valueOf(user.getRol()))
                 .token(token)
                 .build();
     }
@@ -43,6 +45,8 @@ public class AuthService{
         userRepository.save(user);
 
         return AuthResponse.builder()
+                .idUsuario(user.getId())
+                .role(String.valueOf(user.getRol()))
                 .token(jwtService.getToken(user))
                 .build();
 
