@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Servicio para la gestión de reportes.
+ */
 @Service
 @RequiredArgsConstructor
 public class ReporteServicio {
@@ -23,6 +26,13 @@ public class ReporteServicio {
     private final UsuarioServicio usuarioServicio;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Crea un nuevo reporte a partir de la solicitud y el ID de usuario.
+     *
+     * @param request datos del reporte a crear
+     * @param userId ID del usuario que realiza el reporte
+     * @return respuesta HTTP indicando el resultado de la operación
+     */
     public ResponseEntity<?> crearReporte(ReporteRequest request, Integer userId) {
         Boolean estado=false;
         Usuario user = usuarioServicio.findById(userId);
@@ -48,6 +58,12 @@ public class ReporteServicio {
         return ResponseEntity.ok()
                 .body("Reporte creado exitosamente");
     }
+
+    /**
+     * Obtiene la lista de ubicaciones de todos los reportes.
+     *
+     * @return respuesta HTTP con la lista de ubicaciones de los reportes
+     */
     public ResponseEntity<List<UbicacionReporteResponse>> ubicacionReportes() {
         List<Reporte> reportes = reporteRepository.findAll();
         List<UbicacionReporteResponse> ubicacionReporteList = reportes.stream()
