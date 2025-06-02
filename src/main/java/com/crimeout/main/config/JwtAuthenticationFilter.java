@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Excluir rutas públicas de la autenticación
             if (requestPath.equals("/")
-                    || requestPath.startsWith("/api/v1/crimeout/auth/")) {
+                    || requestPath.startsWith("/api/v1/crimeout/")) {
                 filterChain.doFilter(request, response);
                 return;
             }
