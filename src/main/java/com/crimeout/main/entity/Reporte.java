@@ -2,12 +2,14 @@ package com.crimeout.main.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,7 +29,7 @@ public class Reporte {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    @Column(name = "ubicacion", length = 100)
+    @Column(name = "ubicacion", columnDefinition = "TEXT")
     private String ubicacion;
 
     @Column(name = "fecha")
