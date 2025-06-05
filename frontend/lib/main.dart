@@ -5,7 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/features/reports/presentation/screens/reporte_mapa_screen.dart';
 import 'package:frontend/features/reports/presentation/screens/seleccionar_reporte_screen.dart';
 import 'package:frontend/features/reports/presentation/screens/seleccionar_ubicacion_screen.dart';
-import 'package:frontend/screens/login_screen.dart';
+import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
+import 'package:frontend/features/reports_history/presentation/screens/report_history_screen.dart';
 
 
 Future<void> main() async {
@@ -33,6 +34,7 @@ class CrimeOutApp extends StatelessWidget {
     '/reporte-mapa': (context) => const ReporteMapaScreen(),
     '/seleccionar-tipo': (context) => const SeleccionarReporteScreen(),
     '/seleccionar-ubicacion': (context) => const SeleccionarUbicacion(),
+    '/historial-reportes': (context) =>  HistorialReportesScreen(),
   },
 );
   }

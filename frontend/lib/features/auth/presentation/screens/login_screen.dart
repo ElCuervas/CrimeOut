@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/auth_service.dart';
-import 'package:frontend/models/auth_models.dart';
+import '../../data/models/auth_models.dart';
+import '../providers/login_provider.dart';
+import '../widgets/auth_text_field.dart';
+import '../widgets/auth_submit_button.dart';
+import '../widgets/auth_header.dart';
+import 'package:frontend/core/utils/jwt_utils.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const routeName = '/login';
@@ -16,47 +20,72 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passCtrl = TextEditingController();
   bool _obscure = true;
   bool _keepSigned = false;
-  final bool _loading = false;
-  String? _error;
 
   void _toggleObscure() => setState(() => _obscure = !_obscure);
   void _toggleKeepSigned(bool? v) => setState(() => _keepSigned = v ?? false);
 
-  Future<void> _onLogin() async {
-    setState(() => _error = null);
-  try {
-    final authService = ref.read(authServiceProvider);
-    final request = LoginRequest(
-      rut: _rutCtrl.text.trim(),
-      contrasena: _passCtrl.text.trim(),
-    );
+  Future<void> _handleLogin() async {
+    final rut = _rutCtrl.text.trim();
+    final pass = _passCtrl.text.trim();
 
-    final response = await authService.login(request);
+    if (rut.isEmpty || pass.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('RUT y contraseña son obligatorios')),
+      );
+      return;
+    }
 
-    // Si llega aquí, login fue exitoso, redirigimos
-    Navigator.pushReplacementNamed(context, '/reporte-mapa');
-  } catch (e) {
-    setState(() => _error = e.toString());
-  }
-    
+    await ref.read(loginProvider.notifier).login(
+          rut: rut,
+          contrasena: pass,
+        );
   }
 
   @override
-  Widget build(BuildContext c) {
-    final theme = Theme.of(c);
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final loginState = ref.watch(loginProvider);
+    final isLoading = loginState is AsyncLoading;
+
+    loginState.whenOrNull(
+      data: (_) async {
+        final rol = await JwtUtils.getRol();
+
+        switch (rol.toUpperCase()) {
+          case 'USUARIO':
+            Navigator.pushReplacementNamed(context, '/reporte-mapa');
+            break;
+          case 'MUNICIPAL':
+            Navigator.pushReplacementNamed(context, '/vista-policia');
+            break;
+          case 'ADMIN':
+            Navigator.pushReplacementNamed(context, '/vista-admin');
+            break;
+          default:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Rol desconocido: $rol')),
+            );
+        }
+      },
+      error: (err, _) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al iniciar sesión: $err')),
+        );
+      },
+    );
+
     return Scaffold(
       body: Column(
         children: [
-          // Header curvo
           ClipPath(
             clipper: _WaveClipper(),
             child: Container(
               height: 250,
               color: theme.colorScheme.primary,
+              alignment: Alignment.center,
+              child: const AuthHeader(title: 'Inicio Sesión'),
             ),
           ),
-
-          // Contenido
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -64,42 +93,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Inicio Sesión', style: theme.textTheme.headlineSmall),
                     const SizedBox(height: 32),
-
-                    // RUT
-                    TextField(
+                    AuthTextField(
+                      hintText: 'RUT',
                       controller: _rutCtrl,
-                      decoration: InputDecoration(
-                        labelText: 'RUT',
-                        prefixIcon: const Icon(Icons.account_circle),
-                        border: const UnderlineInputBorder(),
-                      ),
                     ),
                     const SizedBox(height: 24),
-
-                    // Contraseña
-                    TextField(
+                    AuthTextField(
+                      hintText: 'Contraseña',
                       controller: _passCtrl,
                       obscureText: _obscure,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                              _obscure ? Icons.visibility_off : Icons.visibility),
-                          onPressed: _toggleObscure,
-                        ),
-                        border: const UnderlineInputBorder(),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(
+                            _obscure ? Icons.visibility_off : Icons.visibility),
+                        onPressed: _toggleObscure,
                       ),
                     ),
-
                     const SizedBox(height: 16),
-                    if (_error != null)
-                      Text(_error!, style: const TextStyle(color: Colors.red)),
-                    const SizedBox(height: 8),
-
-                    // Opciones
                     Row(
                       children: [
                         Checkbox(
@@ -109,30 +122,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const Text('No Cerrar Sesión'),
                         const Spacer(),
                         TextButton(
-                          onPressed: () {/* TODO: olvido */},
+                          onPressed: () {
+                            // TODO: Implementar recuperación de contraseña
+                          },
                           child: const Text('¿Olvidaste tu contraseña?'),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 24),
-
-                    // Botón principal
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: _loading ? null : _onLogin,
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
-                        child: _loading
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text('Inicia Sesión'),
-                      ),
+                    AuthSubmitButton(
+                      text: 'Iniciar sesión',
+                      onPressed: isLoading ? null : _handleLogin,
+                      showLoading: isLoading,
                     ),
-
                     const SizedBox(height: 16),
                     Center(
                       child: TextButton(
@@ -142,7 +144,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: const Text('¿No tienes cuenta? Regístrate'),
                       ),
                     ),
-
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -155,19 +156,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 }
 
-
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final p = Path()..lineTo(0, size.height - 60);
-    p.quadraticBezierTo(
-      size.width * 0.25, size.height,
-      size.width * 0.5, size.height,
-    );
-    p.quadraticBezierTo(
-      size.width * 0.75, size.height,
-      size.width, size.height - 60,
-    );
+    p.quadraticBezierTo(size.width * 0.25, size.height,
+        size.width * 0.5, size.height);
+    p.quadraticBezierTo(size.width * 0.75, size.height,
+        size.width, size.height - 60);
     p.lineTo(size.width, 0);
     return p..close();
   }
