@@ -69,7 +69,12 @@ public class ReporteServicio {
         List<Reporte> reportes = reporteRepository.findAll();
         return ResponseEntity.ok(listaReportes(reportes));
     }
-
+    /**
+     * Obtiene los reportes de un usuario específico.
+     *
+     * @param userId ID del usuario cuyos reportes se desean obtener
+     * @return respuesta HTTP con la lista de reportes del usuario
+     */
     public ResponseEntity<UsuarioReportesResponse> usuarioReportes(Integer userId) {
         Usuario user = usuarioServicio.findById(userId);
         List<Reporte> reportes = reporteRepository.findByUsuario(user);
@@ -81,7 +86,12 @@ public class ReporteServicio {
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
     }
-
+    /**
+     * Convierte una lista de reportes a una lista de respuestas de reporte.
+     *
+     * @param reportes lista de reportes a convertir
+     * @return lista de respuestas de reporte
+     */
     private List<ListReporteResponse> listaReportes(List<Reporte> reportes) {
         return reportes.stream()
                 .map(reporte -> {
