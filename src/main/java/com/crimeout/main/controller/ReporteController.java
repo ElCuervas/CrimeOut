@@ -42,7 +42,10 @@ public class ReporteController {
     public ResponseEntity<?> ubicacionReportes() {
         return reporteServicio.ubicacionReportes();
     }
-
+    @GetMapping("/list/municipal/{tipoReporte}/reportes")
+    public ResponseEntity<?> reportesFalsos(@PathVariable("tipoReporte") String tipoReporte) {
+        return reporteServicio.reportesPorTipo(tipoReporte);
+    }
     /**
      * Obtiene los reportes de un usuario específico.
      *
@@ -50,7 +53,7 @@ public class ReporteController {
      * @return respuesta HTTP con la lista de reportes del usuario
      */
     @GetMapping("/user/{id}/reportes")
-    public ResponseEntity<?> UsuarioReportes( @PathVariable("id") Integer userId) {
+    public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
     }
 }

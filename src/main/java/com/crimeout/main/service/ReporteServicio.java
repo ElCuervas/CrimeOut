@@ -86,13 +86,14 @@ public class ReporteServicio {
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
     }
-     /**
-     * Obtiene una lista de reportes falsos.
+/**
+     * Obtiene los reportes por tipo de reporte.
      *
+     * @param tipoReporte tipo de reporte a buscar
      * @return respuesta HTTP con la lista de reportes del tipo especificado
      */
-    public ResponseEntity<List<ListReporteResponse>> reportesFalsos() {
-        List<Reporte> reportes = reporteRepository.findByConfiable(false);
+    public ResponseEntity<List<ListReporteResponse>> reportesPorTipo(String tipoReporte){
+        List<Reporte> reportes = reporteRepository.findByTipoReporte(TipoReporte.valueOf(tipoReporte));
         if (reportes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
