@@ -86,6 +86,18 @@ public class ReporteServicio {
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
     }
+     /**
+     * Obtiene una lista de reportes falsos.
+     *
+     * @return respuesta HTTP con la lista de reportes del tipo especificado
+     */
+    public ResponseEntity<List<ListReporteResponse>> reportesFalsos() {
+        List<Reporte> reportes = reporteRepository.findByConfiable(false);
+        if (reportes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(listaReportes(reportes));
+    }
     /**
      * Convierte una lista de reportes a una lista de respuestas de reporte.
      *
