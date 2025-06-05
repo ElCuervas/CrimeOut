@@ -24,5 +24,5 @@ public class UsuarioReportesResponse {
 
     private String roles;
 
-    private List<UbicacionReporteResponse> reportes;
+    private List<ListReporteResponse> reportes;
 }

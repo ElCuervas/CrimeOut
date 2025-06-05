@@ -1,7 +1,7 @@
 package com.crimeout.main.service;
 
-import com.crimeout.main.dto.ReporteRequest;
-import com.crimeout.main.dto.UbicacionReporteResponse;
+import com.crimeout.main.dto.CrearReporteRequest;
+import com.crimeout.main.dto.ListReporteResponse;
 import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
@@ -33,7 +33,7 @@ public class ReporteServicio {
      * @param userId ID del usuario que realiza el reporte
      * @return respuesta HTTP indicando el resultado de la operación
      */
-    public ResponseEntity<?> crearReporte(ReporteRequest request, Integer userId) {
+    public ResponseEntity<?> crearReporte(CrearReporteRequest request, Integer userId) {
         Boolean estado=false;
         Usuario user = usuarioServicio.findById(userId);
         String ubicacion;
@@ -64,9 +64,9 @@ public class ReporteServicio {
      *
      * @return respuesta HTTP con la lista de ubicaciones de los reportes
      */
-    public ResponseEntity<List<UbicacionReporteResponse>> ubicacionReportes() {
+    public ResponseEntity<List<ListReporteResponse>> ubicacionReportes() {
         List<Reporte> reportes = reporteRepository.findAll();
-        List<UbicacionReporteResponse> ubicacionReporteList = reportes.stream()
+        List<ListReporteResponse> ubicacionReporteList = reportes.stream()
                 .map(reporte -> {
                     List<Double> ubicacion = new ArrayList<>();
                     try {
@@ -76,7 +76,7 @@ public class ReporteServicio {
                                 }
                         );
                     } catch (Exception ignored) {}
-                    return UbicacionReporteResponse.builder()
+                    return ListReporteResponse.builder()
                             .tipoReporte(reporte.getTipoReporte().name())
                             .ubicacion(ubicacion)
                             .fecha(reporte.getFecha())

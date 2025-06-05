@@ -1,6 +1,6 @@
 package com.crimeout.main.controller;
 
-import com.crimeout.main.dto.ReporteRequest;
+import com.crimeout.main.dto.CrearReporteRequest;
 import org.springframework.stereotype.Controller;
 import com.crimeout.main.service.ReporteServicio;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class ReporteController {
      * @return respuesta HTTP indicando el resultado de la operación
      */
     @PostMapping("/user/{id}/reporte")
-    public ResponseEntity<?> crearReporte(@PathVariable("id") Integer userId, @RequestBody ReporteRequest request) {
+    public ResponseEntity<?> crearReporte(@PathVariable("id") Integer userId, @RequestBody CrearReporteRequest request) {
         return ResponseEntity.ok(reporteServicio.crearReporte(request, userId));
     }
     /**
