@@ -2,6 +2,7 @@ package com.crimeout.main.service;
 
 import com.crimeout.main.dto.CrearReporteRequest;
 import com.crimeout.main.dto.ListReporteResponse;
+import com.crimeout.main.dto.UsuarioReportesResponse;
 import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
@@ -88,5 +89,38 @@ public class ReporteServicio {
                 })
                 .toList();
         return ResponseEntity.ok(ubicacionReporteList);
+    }
+
+    public ResponseEntity<UsuarioReportesResponse> UsuarioReportes(Integer userId) {
+        Usuario user = usuarioServicio.findById(userId);
+        List<Reporte> reportes = reporteRepository.findByUsuario(user);
+        List<ListReporteResponse> ReporteList = reportes.stream()
+                .map(reporte -> {
+                    List<Double> ubicacion = new ArrayList<>();
+                    try {
+                        ubicacion = objectMapper.readValue(
+                                reporte.getUbicacion(),
+                                new com.fasterxml.jackson.core.type.TypeReference<>() {
+                                }
+                        );
+                    } catch (Exception ignored) {}
+                    return ListReporteResponse.builder()
+                            .tipoReporte(reporte.getTipoReporte().name())
+                            .ubicacion(ubicacion)
+                            .fecha(reporte.getFecha())
+                            .imagen(reporte.getImagen())
+                            .detalles(reporte.getDetalles())
+                            .confiable(reporte.getConfiable())
+                            .solucionado(reporte.getSolucionado())
+                            .build();
+                })
+                .toList();
+        UsuarioReportesResponse ReportesUsuario = UsuarioReportesResponse.builder()
+                .idUsuario(user.getId())
+                .nombreUsuario(user.getNombre())
+                .roles(user.getRol().toString())
+                .reportes(ReporteList)
+                .build();
+        return ResponseEntity.ok(ReportesUsuario);
     }
 }

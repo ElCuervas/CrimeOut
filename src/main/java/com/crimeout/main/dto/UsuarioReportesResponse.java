@@ -21,8 +21,12 @@ public class UsuarioReportesResponse {
      * Nombre del usuario.
      */
     private String nombreUsuario;
-
+    /**
+     * roles del usuario.
+     */
     private String roles;
-
+    /**
+     * Lista de reportes asociados al usuario.
+     */
     private List<ListReporteResponse> reportes;
 }
