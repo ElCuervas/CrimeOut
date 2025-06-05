@@ -1,195 +1,132 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/core/utils/rut_validator.dart';
-import 'package:frontend/screens/login_screen.dart';
-import 'package:frontend/features/auth/presentation/providers/register_provider.dart';
+import '../providers/register_provider.dart';
+import '../widgets/auth_text_field.dart';
+import '../widgets/auth_submit_button.dart';
+import '../widgets/auth_header.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
+  static const routeName = '/registro';
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  ClipPath(
-                    clipper: TopWaveClipper(),
-                    child: Container(
-                      height: 200,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                  ),
-                  Positioned(
-                    top: 16,
-                    left: 8,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Regístrate',
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 24),
-                    const RegisterForm(),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('¿Ya tienes cuenta?'),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Inicia Sesión',
-                            style: TextStyle(color: Colors.deepPurple),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _nombreCtrl = TextEditingController();
+  final _rutCtrl = TextEditingController();
+  final _correoCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  bool _obscure = true;
+
+  void _toggleObscure() => setState(() => _obscure = !_obscure);
+
+  Future<void> _onRegister() async {
+    final nombre = _nombreCtrl.text.trim();
+    final rut = _rutCtrl.text.trim();
+    final correo = _correoCtrl.text.trim();
+    final password = _passCtrl.text.trim();
+
+    if (nombre.isEmpty || rut.isEmpty || correo.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor completa todos los campos')),
+      );
+      return;
+    }
+
+    final emailRegex = RegExp( r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");;
+    if (!emailRegex.hasMatch(correo)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Correo electrónico inválido')),
+      );
+      return;
+    }
+
+    final notifier = ref.read(registerProvider.notifier);
+    await notifier.register(
+      correo: correo,
+      password: password,
+      nombre: nombre,
+      rut: rut,
+    );
+
+    final state = ref.read(registerProvider);
+
+    state.when(
+      data: (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Cuenta creada exitosamente')),
+          );
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      },
+      error: (err, _) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al registrar: \$err')),
+        );
+      },
+      loading: () {},
     );
   }
-}
-
-class RegisterForm extends ConsumerStatefulWidget {
-  const RegisterForm({super.key});
-
-  @override
-  ConsumerState<RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends ConsumerState<RegisterForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _rutController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      final notifier = ref.read(registerProvider.notifier);
-      await notifier.register(
-        correo: _emailController.text.trim(),
-        rut: _rutController.text.trim(),
-        nombre: _nameController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
+    final theme = Theme.of(context);
+    final loading = ref.watch(registerProvider).isLoading;
+
+    return Scaffold(
+      body: Column(
         children: [
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              prefixIcon: Icon(Icons.email_outlined),
+          ClipPath(
+            clipper: _WaveClipper(),
+            child: Container(
+              height: 250,
+              color: theme.colorScheme.primary,
+              alignment: Alignment.center,
+              child: const AuthHeader(title: 'Crear Cuenta'),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty || !value.contains('@')) {
-                return 'Ingresa un email válido';
-              }
-              return null;
-            },
           ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Nombre',
-              hintText: 'Ingresa tu Nombre',
-            ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'El nombre es obligatorio';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _rutController,
-            decoration: const InputDecoration(
-              labelText: 'RUT',
-              hintText: 'xx.xxx.xxx-x',
-              prefixIcon: Icon(MaterialCommunityIcons.card_account_details),
-            ),
-            validator: (value) {
-              if (value == null || isValidRut(value)) {
-                return 'RUT inválido';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _passwordController,
-            obscureText: _obscurePassword,
-            decoration: InputDecoration(
-              labelText: 'Contraseña',
-              prefixIcon: const Icon(Icons.lock_outline),
-              suffixIcon: IconButton(
-                icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                onPressed: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              ),
-            ),
-            validator: (value) {
-              if (value == null || value.length < 6) {
-                return 'La contraseña debe tener al menos 6 caracteres';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurpleAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 32),
+                    AuthTextField(hintText: 'Nombre completo', controller: _nombreCtrl),
+                    const SizedBox(height: 16),
+                    AuthTextField(hintText: 'RUT', controller: _rutCtrl),
+                    const SizedBox(height: 16),
+                    AuthTextField(hintText: 'Correo electrónico', controller: _correoCtrl),
+                    const SizedBox(height: 16),
+                    AuthTextField(
+                      hintText: 'Contraseña',
+                      controller: _passCtrl,
+                      obscureText: _obscure,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                        onPressed: _toggleObscure,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    AuthSubmitButton(
+                      text: 'Registrarse',
+                      onPressed: loading ? null : _onRegister,
+                      showLoading: loading,
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+                      child: const Text('¿Ya tienes cuenta? Inicia sesión'),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-              ),
-              onPressed: _submitForm,
-              child: const Text(
-                'Crea Tu Cuenta',
-                style: TextStyle(fontSize: 16),
               ),
             ),
           ),
@@ -199,16 +136,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   }
 }
 
-class TopWaveClipper extends CustomClipper<Path> {
+class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 60);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 60);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
+    final p = Path()..lineTo(0, size.height - 60);
+    p.quadraticBezierTo(size.width * 0.25, size.height, size.width * 0.5, size.height);
+    p.quadraticBezierTo(size.width * 0.75, size.height, size.width, size.height - 60);
+    p.lineTo(size.width, 0);
+    return p..close();
   }
 
   @override

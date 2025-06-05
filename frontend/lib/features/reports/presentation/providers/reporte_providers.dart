@@ -3,7 +3,7 @@ import '../../domain/entities/reporte_request.dart';
 import '../../domain/usecases/providers/crear_reporte_usecase_provider.dart';
 import '../../domain/usecases/providers/obtener_reportes_usecase_provider.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
-import 'package:frontend/screens/providers/userIdProvider.dart';
+import 'package:frontend/features/auth/presentation/providers/userIdProvider.dart';
 
 /// Provider que almacena el tipo de reporte seleccionado por el usuario.
 ///

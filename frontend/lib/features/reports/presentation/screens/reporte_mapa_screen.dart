@@ -146,16 +146,29 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {
-          // Manejar navegación futura
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.place), label: "Reportar"),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: "Historial"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
-        ],
-      ),
+      currentIndex: 0,
+      selectedItemColor: Color(0xFF6B49F6),
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.pushReplacementNamed(context, '/reporte-mapa');
+            break;
+          case 1:
+            Navigator.pushReplacementNamed(context, '/historial-reportes');
+            break;
+          case 2:
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sección Perfil no disponible aún')),
+            );
+            break;
+        }
+      },
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.place), label: "Reportar"),
+        BottomNavigationBarItem(icon: Icon(Icons.history), label: "Historial"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
+      ],
+    )
     );
   }
 }

@@ -8,9 +8,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../providers/reporte_providers.dart';
-import 'package:frontend/screens/providers/userIdProvider.dart';
+import 'package:frontend/features/auth/presentation/providers/userIdProvider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/foundation.dart';
+import '../widgets/ubicacion_mapa_widget.dart';
+import '../widgets/detalles_popup_dialog.dart';
+
+import '../widgets/botones_inferiores_reporte.dart';
 
 class SeleccionarUbicacion extends ConsumerStatefulWidget {
   const SeleccionarUbicacion({super.key});
@@ -109,97 +113,12 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
 
   /// Abre el popup para agregar detalles e imagen
   Future<void> _mostrarPopupDetalles() async {
-    final TextEditingController _textoController = TextEditingController(
-      text: ref.read(detallesReporteProvider) ?? '',
-    );
-
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return Consumer(
-          builder: (context, ref, child) {
-            // Obtenemos el estado actual de la imagen (si ya se cargó)
-            final imagenBase64 = ref.watch(imagenReporteProvider);
-
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Añadir Imagen', style: TextStyle(fontWeight: FontWeight.bold)),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Botón para seleccionar imagen
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2E2E3E),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      ),
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final XFile? foto = await picker.pickImage(source: ImageSource.camera);
-                        if (foto != null) {
-                          try {
-                            final base64Img = await compute(_comprimirYCodificar, foto.path);
-                            ref.read(imagenReporteProvider.notifier).state = base64Img;
-                          } catch (e) {
-                            print('Error al procesar la imagen: $e');
-                          }
-                        }
-                      },
-                      icon: const Icon(Icons.image),
-                      label: const Text('Añadir Imagen'),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Campo de texto para detalles
-                    TextField(
-                      controller: _textoController,
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        hintText: 'Describe los detalles del incidente...',
-                      ),
-                      onChanged: (value) {
-                        ref.read(detallesReporteProvider.notifier).state = value;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF6B49F6),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  ),
-                  onPressed: () {
-                    // Simplemente cerramos el dialog y guardamos los estados
-                    Navigator.pop(context);
-                  },
-                  child: Text('Guardar Detalles'),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      builder: (context) => DetallesPopupDialog(), // sin const
     );
-  }
+}
 
   /// Envía el reporte al backend (invoca al provider FutureProvider)
   void _enviarReporte() async {
@@ -240,73 +159,20 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
-    // Creamos el Marker “draggeable” para la ubicación seleccionada
-    final Marker marcadorSeleccionable = Marker(
-      markerId: MarkerId('marcador_${_ubicacionSeleccionada!.latitude}_${_ubicacionSeleccionada!.longitude}'),
-      position: _ubicacionSeleccionada!,
-      draggable: true,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      onDragEnd: (nuevaPos) => _onMarcadorMovido(nuevaPos),
-    );
-
-    // Creamos el Circle de 50m alrededor de la ubicación del usuario
-    final Circle circle50m = _circle.copyWith(
-      centerParam: _ubicacionUsuario,
-    );
-
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _ubicacionUsuario!,
-              zoom: 17,
-            ),
+          UbicacionMapaWidget(
+            ubicacionUsuario: _ubicacionUsuario!,
+            ubicacionSeleccionada: _ubicacionSeleccionada!,
+            onDragEnd: _onMarcadorMovido,
             onMapCreated: _onMapaCreado,
-            markers: {marcadorSeleccionable},
-            circles: {circle50m},
-            myLocationEnabled: false,
-            myLocationButtonEnabled: false,
           ),
 
           // Botón “Agregar Detalles” (parte inferior, texto oscuro + ícono)
-          Positioned(
-            bottom: 100,
-            left: 16,
-            right: 16,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF2E2E3E),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: _mostrarPopupDetalles,
-              icon: Icon(Icons.image, color: Colors.white),
-              label: Text(
-                'Agregar Detalles',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-
-          // Botón “Enviar Reporte” (parte inferior, color principal)
-          Positioned(
-            bottom: 32,
-            left: 16,
-            right: 16,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6B49F6),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: EdgeInsets.symmetric(vertical: 20),
-              ),
-              onPressed: _enviarReporte,
-              child: Text(
-                'Enviar Reporte',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
+            BotonesInferioresReporte(
+            onAgregarDetalles: _mostrarPopupDetalles,
+            onEnviarReporte: _enviarReporte,
           ),
         ],
       ),
@@ -324,22 +190,5 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
         },
       ),
     );
-  }
-  Future<String> _comprimirYCodificar(String path) async {
-    final compressedBytes = await FlutterImageCompress.compressWithFile(
-      path,
-      quality: 60,
-      format: CompressFormat.jpeg,
-    );
-
-    if (compressedBytes == null) throw Exception('Error al comprimir imagen');
-
-    return base64Encode(compressedBytes);
-  }
-
-  @override
-  void dispose() {
-    _mapController?.dispose();
-    super.dispose();
   }
 }

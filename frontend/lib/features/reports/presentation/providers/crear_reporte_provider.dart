@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/reporte_request.dart';
 import '../../domain/usecases/providers/crear_reporte_usecase_provider.dart';
 import '../providers/reporte_providers.dart';
-import 'package:frontend/screens/providers/userIdProvider.dart';
+import 'package:frontend/features/auth/presentation/providers/userIdProvider.dart';
 
 /// Provider encargado de enviar un nuevo reporte al backend.
 ///
@@ -12,6 +12,7 @@ import 'package:frontend/screens/providers/userIdProvider.dart';
 /// [ReporteRequest] y ejecuta el caso de uso [CrearReporteUseCase].
 final crearReporteProvider = FutureProvider<void>((ref) async {
   final tipo = ref.read(tipoReporteSeleccionadoProvider);
+  final ubicacion = ref.read(ubicacionSeleccionadaProvider);
   final detalles = ref.read(detallesReporteProvider);
   final imagen = ref.read(imagenReporteProvider);
 
