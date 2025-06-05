@@ -1,7 +1,8 @@
 package com.crimeout.main.service;
 
-import com.crimeout.main.dto.ReporteRequest;
-import com.crimeout.main.dto.UbicacionReporteResponse;
+import com.crimeout.main.dto.CrearReporteRequest;
+import com.crimeout.main.dto.ListReporteResponse;
+import com.crimeout.main.dto.UsuarioReportesResponse;
 import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
@@ -33,7 +34,7 @@ public class ReporteServicio {
      * @param userId ID del usuario que realiza el reporte
      * @return respuesta HTTP indicando el resultado de la operación
      */
-    public ResponseEntity<?> crearReporte(ReporteRequest request, Integer userId) {
+    public ResponseEntity<?> crearReporte(CrearReporteRequest request, Integer userId) {
         Boolean estado=false;
         Usuario user = usuarioServicio.findById(userId);
         String ubicacion;
@@ -64,9 +65,35 @@ public class ReporteServicio {
      *
      * @return respuesta HTTP con la lista de ubicaciones de los reportes
      */
-    public ResponseEntity<List<UbicacionReporteResponse>> ubicacionReportes() {
+    public ResponseEntity<List<ListReporteResponse>> ubicacionReportes() {
         List<Reporte> reportes = reporteRepository.findAll();
-        List<UbicacionReporteResponse> ubicacionReporteList = reportes.stream()
+        return ResponseEntity.ok(listaReportes(reportes));
+    }
+    /**
+     * Obtiene los reportes de un usuario específico.
+     *
+     * @param userId ID del usuario cuyos reportes se desean obtener
+     * @return respuesta HTTP con la lista de reportes del usuario
+     */
+    public ResponseEntity<UsuarioReportesResponse> usuarioReportes(Integer userId) {
+        Usuario user = usuarioServicio.findById(userId);
+        List<Reporte> reportes = reporteRepository.findByUsuario(user);
+        UsuarioReportesResponse ReportesUsuario = UsuarioReportesResponse.builder()
+                .idUsuario(user.getId())
+                .nombreUsuario(user.getNombre())
+                .roles(user.getRol().toString())
+                .reportes(listaReportes(reportes))
+                .build();
+        return ResponseEntity.ok(ReportesUsuario);
+    }
+    /**
+     * Convierte una lista de reportes a una lista de respuestas de reporte.
+     *
+     * @param reportes lista de reportes a convertir
+     * @return lista de respuestas de reporte
+     */
+    private List<ListReporteResponse> listaReportes(List<Reporte> reportes) {
+        return reportes.stream()
                 .map(reporte -> {
                     List<Double> ubicacion = new ArrayList<>();
                     try {
@@ -76,7 +103,7 @@ public class ReporteServicio {
                                 }
                         );
                     } catch (Exception ignored) {}
-                    return UbicacionReporteResponse.builder()
+                    return ListReporteResponse.builder()
                             .tipoReporte(reporte.getTipoReporte().name())
                             .ubicacion(ubicacion)
                             .fecha(reporte.getFecha())
@@ -87,6 +114,5 @@ public class ReporteServicio {
                             .build();
                 })
                 .toList();
-        return ResponseEntity.ok(ubicacionReporteList);
     }
 }

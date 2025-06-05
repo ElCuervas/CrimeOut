@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReporteRequest {
+public class CrearReporteRequest {
 
     /**
      * Tipo de reporte a crear.

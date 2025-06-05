@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UbicacionReporteResponse {
+public class ListReporteResponse {
 
     /**
      * Tipo de reporte.
