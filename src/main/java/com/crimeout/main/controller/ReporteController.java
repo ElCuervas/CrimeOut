@@ -42,4 +42,15 @@ public class ReporteController {
     public ResponseEntity<?> ubicacionReportes() {
         return reporteServicio.ubicacionReportes();
     }
+
+    /**
+     * Obtiene los reportes de un usuario específico.
+     *
+     * @param userId ID del usuario cuyos reportes se desean obtener
+     * @return respuesta HTTP con la lista de reportes del usuario
+     */
+    @GetMapping("/user/{id}/reportes")
+    public ResponseEntity<?> UsuarioReportes( @PathVariable("id") Integer userId) {
+        return reporteServicio.UsuarioReportes(userId);
+    }
 }
