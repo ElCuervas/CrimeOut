@@ -51,6 +51,6 @@ public class ReporteController {
      */
     @GetMapping("/user/{id}/reportes")
     public ResponseEntity<?> UsuarioReportes( @PathVariable("id") Integer userId) {
-        return reporteServicio.UsuarioReportes(userId);
+        return reporteServicio.usuarioReportes(userId);
     }
 }

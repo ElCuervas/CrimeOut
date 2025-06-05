@@ -67,60 +67,42 @@ public class ReporteServicio {
      */
     public ResponseEntity<List<ListReporteResponse>> ubicacionReportes() {
         List<Reporte> reportes = reporteRepository.findAll();
-        List<ListReporteResponse> ubicacionReporteList = reportes.stream()
-                .map(reporte -> {
-                    List<Double> ubicacion = new ArrayList<>();
-                    try {
-                        ubicacion = objectMapper.readValue(
-                                reporte.getUbicacion(),
-                                new com.fasterxml.jackson.core.type.TypeReference<>() {
-                                }
-                        );
-                    } catch (Exception ignored) {}
-                    return ListReporteResponse.builder()
-                            .tipoReporte(reporte.getTipoReporte().name())
-                            .ubicacion(ubicacion)
-                            .fecha(reporte.getFecha())
-                            .imagen(reporte.getImagen())
-                            .detalles(reporte.getDetalles())
-                            .confiable(reporte.getConfiable())
-                            .solucionado(reporte.getSolucionado())
-                            .build();
-                })
-                .toList();
-        return ResponseEntity.ok(ubicacionReporteList);
+        return ResponseEntity.ok(listaReportes(reportes));
     }
 
-    public ResponseEntity<UsuarioReportesResponse> UsuarioReportes(Integer userId) {
+    public ResponseEntity<UsuarioReportesResponse> usuarioReportes(Integer userId) {
         Usuario user = usuarioServicio.findById(userId);
         List<Reporte> reportes = reporteRepository.findByUsuario(user);
-        List<ListReporteResponse> ReporteList = reportes.stream()
-                .map(reporte -> {
-                    List<Double> ubicacion = new ArrayList<>();
-                    try {
-                        ubicacion = objectMapper.readValue(
-                                reporte.getUbicacion(),
-                                new com.fasterxml.jackson.core.type.TypeReference<>() {
-                                }
-                        );
-                    } catch (Exception ignored) {}
-                    return ListReporteResponse.builder()
-                            .tipoReporte(reporte.getTipoReporte().name())
-                            .ubicacion(ubicacion)
-                            .fecha(reporte.getFecha())
-                            .imagen(reporte.getImagen())
-                            .detalles(reporte.getDetalles())
-                            .confiable(reporte.getConfiable())
-                            .solucionado(reporte.getSolucionado())
-                            .build();
-                })
-                .toList();
         UsuarioReportesResponse ReportesUsuario = UsuarioReportesResponse.builder()
                 .idUsuario(user.getId())
                 .nombreUsuario(user.getNombre())
                 .roles(user.getRol().toString())
-                .reportes(ReporteList)
+                .reportes(listaReportes(reportes))
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
+    }
+
+    private List<ListReporteResponse> listaReportes(List<Reporte> reportes) {
+        return reportes.stream()
+                .map(reporte -> {
+                    List<Double> ubicacion = new ArrayList<>();
+                    try {
+                        ubicacion = objectMapper.readValue(
+                                reporte.getUbicacion(),
+                                new com.fasterxml.jackson.core.type.TypeReference<>() {
+                                }
+                        );
+                    } catch (Exception ignored) {}
+                    return ListReporteResponse.builder()
+                            .tipoReporte(reporte.getTipoReporte().name())
+                            .ubicacion(ubicacion)
+                            .fecha(reporte.getFecha())
+                            .imagen(reporte.getImagen())
+                            .detalles(reporte.getDetalles())
+                            .confiable(reporte.getConfiable())
+                            .solucionado(reporte.getSolucionado())
+                            .build();
+                })
+                .toList();
     }
 }
