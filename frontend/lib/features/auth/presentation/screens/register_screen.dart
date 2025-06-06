@@ -4,6 +4,7 @@ import '../providers/register_provider.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_submit_button.dart';
 import '../widgets/auth_header.dart';
+import 'package:frontend/core/utils/rut_validator.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   static const routeName = '/registro';
@@ -19,7 +20,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _correoCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscure = true;
-
+  final RutValidator _rutValidator = RutValidator();
   void _toggleObscure() => setState(() => _obscure = !_obscure);
 
   Future<void> _onRegister() async {
@@ -31,6 +32,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (nombre.isEmpty || rut.isEmpty || correo.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor completa todos los campos')),
+      );
+      return;
+    }
+
+    print(RutValidator.Check(rut));
+    if (!RutValidator.Check(rut)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Rut inválido')),
       );
       return;
     }
