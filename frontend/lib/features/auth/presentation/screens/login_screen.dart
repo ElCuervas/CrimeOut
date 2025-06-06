@@ -89,15 +89,7 @@ Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ClipPath(
-            clipper: _WaveClipper(),
-            child: Container(
-              height: 250,
-              color: theme.colorScheme.primary,
-              alignment: Alignment.center,
-              child: const AuthHeader(title: 'Inicio Sesión'),
-            ),
-          ),
+          const AuthHeader(title: 'Inicio Sesión'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -109,21 +101,16 @@ Widget build(BuildContext context) {
                     AuthTextField(
                       hintText: 'RUT',
                       controller: _rutCtrl,
+                      icon: Icons.person
                     ),
                     const SizedBox(height: 24),
                     AuthTextField(
                       hintText: 'Contraseña',
                       controller: _passCtrl,
+                      icon: Icons.lock,
                       obscureText: _obscure,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(
-                          _obscure ? Icons.visibility_off : Icons.visibility,
-                        ),
-                        onPressed: _toggleObscure,
-                      ),
+                      isPassword: true,
+                      onToggleVisibility: _toggleObscure,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -134,12 +121,7 @@ Widget build(BuildContext context) {
                         ),
                         const Text('No Cerrar Sesión'),
                         const Spacer(),
-                        TextButton(
-                          onPressed: () {
-                            // TODO: Implementar recuperación de contraseña
-                          },
-                          child: const Text('¿Olvidaste tu contraseña?'),
-                        ),
+                        
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -169,18 +151,3 @@ Widget build(BuildContext context) {
   }
 }
 
-class _WaveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final p = Path()..lineTo(0, size.height - 60);
-    p.quadraticBezierTo(size.width * 0.25, size.height,
-        size.width * 0.5, size.height);
-    p.quadraticBezierTo(size.width * 0.75, size.height,
-        size.width, size.height - 60);
-    p.lineTo(size.width, 0);
-    return p..close();
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> old) => false;
-}

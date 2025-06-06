@@ -88,15 +88,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return Scaffold(
       body: Column(
         children: [
-          ClipPath(
-            clipper: _WaveClipper(),
-            child: Container(
-              height: 250,
-              color: theme.colorScheme.primary,
-              alignment: Alignment.center,
-              child: const AuthHeader(title: 'Crear Cuenta'),
-            ),
-          ),
+          const AuthHeader(title: 'Registro'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -104,24 +96,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 32),
-                    AuthTextField(hintText: 'Nombre completo', controller: _nombreCtrl),
+                    AuthTextField(hintText: 'Nombre completo', controller: _nombreCtrl,icon: Icons.person),
                     const SizedBox(height: 16),
-                    AuthTextField(hintText: 'RUT', controller: _rutCtrl),
+                    AuthTextField(hintText: 'RUT', controller: _rutCtrl,icon: Icons.badge),
                     const SizedBox(height: 16),
-                    AuthTextField(hintText: 'Correo electrónico', controller: _correoCtrl),
+                    AuthTextField(hintText: 'Correo electrónico', controller: _correoCtrl,icon: Icons.email),
                     const SizedBox(height: 16),
                     AuthTextField(
                       hintText: 'Contraseña',
                       controller: _passCtrl,
+                      icon: Icons.lock,
                       obscureText: _obscure,
+                      isPassword: true,
+                      onToggleVisibility: _toggleObscure,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
-                        onPressed: _toggleObscure,
-                      ),
-                    ),
+                    
                     const SizedBox(height: 24),
                     AuthSubmitButton(
                       text: 'Registrarse',
@@ -145,16 +134,3 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 }
 
-class _WaveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final p = Path()..lineTo(0, size.height - 60);
-    p.quadraticBezierTo(size.width * 0.25, size.height, size.width * 0.5, size.height);
-    p.quadraticBezierTo(size.width * 0.75, size.height, size.width, size.height - 60);
-    p.lineTo(size.width, 0);
-    return p..close();
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}

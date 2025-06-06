@@ -9,6 +9,7 @@ import '../../domain/entities/ubicacion_reporte.dart';
 import 'package:frontend/core/utils/iconos_reportes.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/core/utils/jwt_utils.dart';
+import '../widgets/botones_reporte.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
   const ReporteMapaScreen({super.key});
@@ -150,44 +151,33 @@ Future<void> _handleLogout(BuildContext context) async {
               error: (e, _) => Center(child: Text('Error al cargar reportes: \$e')),
             ),
 
-          // Botones para JEFE_VECINAL
           Positioned(
-          bottom: 100,
-          left: 32,
-          right: 32,
-          child: Column(
-            children: [
-              ElevatedButton(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  '/seleccionar-tipo',
-                  arguments: 'personal',
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6B49F6),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('Generar Reporte', style: TextStyle(fontSize: 16, color: Colors.white)),
-              ),
-
-                // Solo se muestra si el usuario es JEFE_VECINAL
+            bottom: 40,
+            left: 16,
+            right: 16,
+            child: Column(
+              children: [
                 if (_userRole == 'JEFE_VECINAL') ...[
-                  const SizedBox(height: 16),
-                  ElevatedButton(
+                  BotonReporte(
+                    texto: 'Generar Reporte Vecino',
                     onPressed: () => Navigator.pushNamed(
                       context,
                       '/seleccionar-tipo',
                       arguments: 'vecino',
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text('Generar Reporte para Vecino', style: TextStyle(fontSize: 16, color: Colors.white)),
+                    colorFondo: Colors.black87,
                   ),
+                  const SizedBox(height: 12),
                 ],
+                BotonReporte(
+                  texto: 'Generar Reporte',
+                  onPressed: () => Navigator.pushNamed(
+                  context,
+                  '/seleccionar-tipo',
+                  arguments: 'personal',
+                ),
+                  colorFondo: const Color(0xFF6B49F6),
+                ),
               ],
             ),
           ),

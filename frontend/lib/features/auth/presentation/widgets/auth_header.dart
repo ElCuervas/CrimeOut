@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AuthHeader extends StatelessWidget {
   final String title;
@@ -7,16 +8,32 @@ class AuthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        // Puedes reemplazar esto con tu logo
-        const Icon(Icons.lock, size: 100, color: Colors.deepPurple),
-        const SizedBox(height: 20),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        // Imagen ya curva, sin necesidad de ClipPath
+        Container(
+  height: 350,
+  width: double.infinity,
+  decoration: const BoxDecoration(
+    image: DecorationImage(
+      image: AssetImage('icons/topo_wave.png'),
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+    ),
+  ),
+),
+        Positioned(
+          left: 24,
+          bottom: 24,
+          child: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 28,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[900],
+            ),
+          ),
         ),
-        const SizedBox(height: 20),
       ],
     );
   }

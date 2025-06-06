@@ -131,8 +131,14 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
       // Crear el reporte
       await ref.read(crearReporteProvider.future);
 
+      ref.invalidate(crearReporteProvider);
       // Forzar recarga del mapa al volver
       ref.invalidate(reportesMapaProvider);
+      ref.invalidate(tipoReporteSeleccionadoProvider);
+      ref.invalidate(detallesReporteProvider);
+      ref.invalidate(imagenReporteProvider);
+      ref.invalidate(ubicacionSeleccionadaProvider);
+
 
       Navigator.pushNamedAndRemoveUntil(
           context,
