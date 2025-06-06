@@ -94,7 +94,7 @@ public class ReporteServicio {
      * @return respuesta HTTP con la lista de reportes del tipo especificado
      */
     public ResponseEntity<List<ListReporteResponse>> reportesPorTipo(String tipoReporte){
-        List<Reporte> reportes = reporteRepository.findByTipoReporte(TipoReporte.valueOf(tipoReporte));
+        List<Reporte> reportes = reporteRepository.findByTipoReporteAndSolucionado(TipoReporte.valueOf(tipoReporte),false);
         if (reportes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
