@@ -38,7 +38,7 @@ class ReporteHistorialItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Tipo: \$tipo', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('Tipo: $tipo', style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
                   Text(descripcion, style: const TextStyle(color: Colors.black54)),
                 ],

@@ -29,15 +29,12 @@ class _HistorialReportesScreenState extends ConsumerState<HistorialReportesScree
   });
   }
 
-  Future<void> _cargarIconos() async {
-    final iconosMap = await IconosReportes.cargarIconos();
-    setState(() {
-      _iconos = {
-        for (final entry in iconosMap.entries)
-          entry.key: AssetImage("assets/${entry.key.toLowerCase()}.png")
-      };
-    });
-  }
+ Future<void> _cargarIconos() async {
+  final iconosMap = await IconosReportes.cargarIconosUI(); // <-- usamos los AssetImage
+  setState(() {
+    _iconos = iconosMap;
+  });
+}
 
   @override
   Widget build(BuildContext context) {

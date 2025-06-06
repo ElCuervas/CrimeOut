@@ -34,4 +34,12 @@ class IconosReportes {
       path,
     );
   }
+
+  static Future<Map<String, AssetImage>> cargarIconosUI() async {
+  final tipos = ['ACTIVIDAD_ILICITA', 'MALTRATO_ANIMAL', 'BASURAL', 'MICROTRAFICO'];
+  return {
+    for (final tipo in tipos)
+      tipo: AssetImage('icons/${tipo.toLowerCase()}.png'),
+  };
+}
 }
