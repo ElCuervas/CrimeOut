@@ -39,13 +39,12 @@ class RutValidator {
     var valor = rut.replaceAll('.', '');
     // Despejar Guión
     valor = valor.replaceAll('-', '');
-   
+
     var cuerpo = valor.substring(0, valor.length - 1);
 
     var dv = valor.substring(valor.length - 1).toUpperCase();
 
     if (isNumeric(cuerpo)) {
-
       // Formatear RUN
       rut = cuerpo + '-' + dv;
 
@@ -58,30 +57,26 @@ class RutValidator {
       var suma = 0;
       var multiplo = 2;
 
-      // Para cada dígito del Cuerpo
-      for (var i = 1; i <= cuerpo.length; i++) {
-        // Obtener su Producto con el Múltiplo Correspondiente
-        var index = multiplo * int.parse(charAt(valor, cuerpo.length - i));
-
-        // Sumar al Contador General
-        suma = suma + index;
-
-        // Consolidar Múltiplo dentro del rango [2,7]
-        if (multiplo < 7) {
-          multiplo = multiplo + 1;
-        } else {
-          multiplo = 2;
-        }
+      // Para cada dígito del Cuerpo (de derecha a izquierda)
+      for (var i = cuerpo.length - 1; i >= 0; i--) {
+        suma += int.parse(cuerpo[i]) * multiplo;
+        multiplo = multiplo < 7 ? multiplo + 1 : 2;
       }
 
       // Calcular Dígito Verificador en base al Módulo 11
       var dvEsperado = 11 - (suma % 11);
 
-      // Casos Especiales (0 y K)
-      dv = (dv == 'K') ? '10' : dv;
-      dv= (dv == 0) ? '11' : dv;
+      String dvCalculado;
+      if (dvEsperado == 11) {
+        dvCalculado = '0';
+      } else if (dvEsperado == 10) {
+        dvCalculado = 'K';
+      } else {
+        dvCalculado = dvEsperado.toString();
+      }
+
       // Validar que el Cuerpo coincide con su Dígito Verificador
-      if (dvEsperado.toString() != dv.toString()) {
+      if (dv != dvCalculado) {
         return false;
       }
 
