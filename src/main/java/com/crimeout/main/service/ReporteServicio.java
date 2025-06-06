@@ -60,7 +60,6 @@ public class ReporteServicio {
         return ResponseEntity.ok()
                 .body("Reporte creado exitosamente");
     }
-
     /**
      * Obtiene la lista de ubicaciones de todos los reportes.
      *
@@ -100,6 +99,13 @@ public class ReporteServicio {
         }
         return ResponseEntity.ok(listaReportes(reportes));
     }
+    /**
+     * Actualiza el estado de un reporte.
+     *
+     * @param reporteId ID del reporte a actualizar
+     * @param request datos del estado del reporte
+     * @return respuesta HTTP indicando el resultado de la operación
+     */
     public ResponseEntity<?> estadoReporte(Integer reporteId, EstadoReporteDto request) {
         Reporte reporte = reporteRepository.findById(reporteId)
                 .orElseThrow(() -> new IllegalArgumentException("Reporte con id " + reporteId + " no encontrado"));

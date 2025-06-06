@@ -57,6 +57,13 @@ public class ReporteController {
     public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
     }
+    /**
+     * Actualiza el estado de un reporte.
+     *
+     * @param id ID del reporte a actualizar
+     * @param request datos del estado del reporte a actualizar
+     * @return respuesta HTTP indicando el resultado de la operación
+     */
     @PatchMapping("/reporte/{id}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Integer id, @RequestBody EstadoReporteDto request) {
         return reporteServicio.estadoReporte(id, request);
