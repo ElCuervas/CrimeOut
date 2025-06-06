@@ -11,19 +11,18 @@ class LoginRequest {
 }
 
 class LoginResponse {
-  final String role;
+
   final String token;
   final int idUsuario;
 
   LoginResponse({
-    required this.role,
+
     required this.token,
     required this.idUsuario,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
   return LoginResponse(
-    role: json['role'] as String,
     token: json['token'] as String,
     idUsuario: int.tryParse(json['idUsuario'].toString()) ?? -1,
   );

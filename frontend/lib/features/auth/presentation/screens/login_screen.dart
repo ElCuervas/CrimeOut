@@ -6,6 +6,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_submit_button.dart';
 import '../widgets/auth_header.dart';
 import 'package:frontend/core/utils/jwt_utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const routeName = '/login';
@@ -20,6 +21,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passCtrl = TextEditingController();
   bool _obscure = true;
   bool _keepSigned = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _toggleObscure() => setState(() => _obscure = !_obscure);
   void _toggleKeepSigned(bool? v) => setState(() => _keepSigned = v ?? false);
@@ -42,22 +48,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final loginState = ref.watch(loginProvider);
-    final isLoading = loginState is AsyncLoading;
+Widget build(BuildContext context) {
+  final theme = Theme.of(context);
+  final loginState = ref.watch(loginProvider);
+  final isLoading = loginState is AsyncLoading;
 
+  // ✅ Ejecuta después del primer frame (seguro para Navigator y SnackBar)
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
     loginState.whenOrNull(
       data: (_) async {
         final rol = await JwtUtils.getRol();
 
+        if (!context.mounted) return;
+
         switch (rol.toUpperCase()) {
           case 'USUARIO':
-            Navigator.pushReplacementNamed(context, '/reporte-mapa');
-            break;
           case 'JEFE_VECINAL':
             Navigator.pushReplacementNamed(context, '/reporte-mapa');
-              break;
+            break;
           case 'MUNICIPAL':
             Navigator.pushReplacementNamed(context, '/vista-policia');
             break;
@@ -76,6 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       },
     );
+  });
 
     return Scaffold(
       body: Column(
@@ -111,7 +120,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: IconButton(
                         icon: Icon(
-                            _obscure ? Icons.visibility_off : Icons.visibility),
+                          _obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
                         onPressed: _toggleObscure,
                       ),
                     ),
