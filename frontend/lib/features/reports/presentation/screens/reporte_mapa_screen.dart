@@ -7,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import '../providers/reporte_providers.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
 import 'package:frontend/core/utils/iconos_reportes.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/core/utils/jwt_utils.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
   const ReporteMapaScreen({super.key});
@@ -19,13 +21,51 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
   GoogleMapController? _mapController;
   LatLng? _ubicacionUsuario;
   Map<String, BitmapDescriptor>? _iconos;
+  String? _userRole;
 
   @override
   void initState() {
     super.initState();
     _obtenerUbicacionUsuario();
     _cargarIconos();
+    _initUserRole();
   }
+  Future<void> _initUserRole() async {
+  final role = await JwtUtils.getRol();
+  debugPrint('ROL OBTENIDO DESDE JWT: $role');
+  if (mounted) {
+    setState(() {
+      _userRole = role;
+    });
+  }
+}
+Future<void> _handleLogout(BuildContext context) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Cerrar sesión'),
+      content: const Text('¿Estás seguro de que deseas cerrar sesión?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Cerrar sesión'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    final storage = FlutterSecureStorage(); // sin `const`
+    await storage.deleteAll();
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
+}
 
   Future<void> _cargarIconos() async {
     final iconos = await IconosReportes.cargarIconos();
@@ -60,7 +100,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
     final icono = _iconos?[r.tipoReporte] ?? BitmapDescriptor.defaultMarker;
 
     return Marker(
-      markerId: MarkerId('reporte_\$index'),
+      markerId: MarkerId('reporte_$index'),
       position: position,
       icon: icono,
       infoWindow: InfoWindow(title: r.tipoReporte, snippet: r.detalles),
@@ -71,7 +111,6 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
   Widget build(BuildContext context) {
     final reportesAsync = ref.watch(reportesMapaProvider);
     final iconosListos = _iconos != null;
-    final userRoleAsync = ref.watch(userIdProvider);
 
     return Scaffold(
       body: Stack(
@@ -133,7 +172,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
               ),
 
                 // Solo se muestra si el usuario es JEFE_VECINAL
-                if (userRoleAsync == 'JEFE_VECINAL') ...[
+                if (_userRole == 'JEFE_VECINAL') ...[
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.pushNamed(
@@ -176,9 +215,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
               Navigator.pushReplacementNamed(context, '/historial-reportes');
               break;
             case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sección Perfil no disponible aún')),
-              );
+              _handleLogout(context); // Llamada sin await
               break;
           }
         },

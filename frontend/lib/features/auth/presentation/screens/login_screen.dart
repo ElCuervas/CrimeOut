@@ -55,6 +55,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           case 'USUARIO':
             Navigator.pushReplacementNamed(context, '/reporte-mapa');
             break;
+          case 'JEFE_VECINAL':
+            Navigator.pushReplacementNamed(context, '/reporte-mapa');
+              break;
           case 'MUNICIPAL':
             Navigator.pushReplacementNamed(context, '/vista-policia');
             break;
