@@ -10,29 +10,25 @@ class UbicacionReporte {
   final List<double> ubicacion;
 
   /// Fecha en que se generó el reporte.
-  final DateTime fecha;
+ 
 
   /// Imagen asociada al reporte (puede ser URL o base64).
-  final String imagen;
+
 
   /// Detalles descriptivos proporcionados por el usuario.
   final String detalles;
 
   /// Indica si el reporte fue validado como confiable.
-  final bool confiable;
+  
 
   /// Indica si el incidente reportado ya ha sido solucionado.
-  final bool solucionado;
+
 
   /// Constructor para inicializar una instancia de [UbicacionReporte].
   UbicacionReporte({
     required this.tipoReporte,
     required this.ubicacion,
-    required this.fecha,
-    required this.imagen,
     required this.detalles,
-    required this.confiable,
-    required this.solucionado,
   });
 
   /// Crea una instancia de [UbicacionReporte] a partir de un mapa JSON.
@@ -43,11 +39,7 @@ class UbicacionReporte {
     return UbicacionReporte(
       tipoReporte: json['tipoReporte'],
       ubicacion: List<double>.from(json['ubicacion']),
-      fecha: DateTime.parse(json['fecha']),
-      imagen: json['imagen'],
       detalles: json['detalles'],
-      confiable: json['confiable'],
-      solucionado: json['solucionado'],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import '../providers/reporte_providers.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
 import 'package:frontend/core/utils/iconos_reportes.dart';
+import 'package:frontend/core/utils/jwt_utils.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
   const ReporteMapaScreen({super.key});
@@ -19,13 +20,24 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
   GoogleMapController? _mapController;
   LatLng? _ubicacionUsuario;
   Map<String, BitmapDescriptor>? _iconos;
+  String? _userRole;
 
   @override
   void initState() {
     super.initState();
     _obtenerUbicacionUsuario();
     _cargarIconos();
+    _initUserRole();
   }
+  Future<void> _initUserRole() async {
+  final role = await JwtUtils.getRol();
+  debugPrint('ROL OBTENIDO DESDE JWT: $role');
+  if (mounted) {
+    setState(() {
+      _userRole = role;
+    });
+  }
+}
 
   Future<void> _cargarIconos() async {
     final iconos = await IconosReportes.cargarIconos();
@@ -60,7 +72,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
     final icono = _iconos?[r.tipoReporte] ?? BitmapDescriptor.defaultMarker;
 
     return Marker(
-      markerId: MarkerId('reporte_\$index'),
+      markerId: MarkerId('reporte_$index'),
       position: position,
       icon: icono,
       infoWindow: InfoWindow(title: r.tipoReporte, snippet: r.detalles),
@@ -71,7 +83,6 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
   Widget build(BuildContext context) {
     final reportesAsync = ref.watch(reportesMapaProvider);
     final iconosListos = _iconos != null;
-    final userRoleAsync = ref.watch(userIdProvider);
 
     return Scaffold(
       body: Stack(
@@ -133,7 +144,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
               ),
 
                 // Solo se muestra si el usuario es JEFE_VECINAL
-                if (userRoleAsync == 'JEFE_VECINAL') ...[
+                if (_userRole == 'JEFE_VECINAL') ...[
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.pushNamed(
