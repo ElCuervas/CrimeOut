@@ -100,6 +100,22 @@ public class ReporteServicio {
         return ResponseEntity.ok(listaReportes(reportes));
     }
     /**
+     * Actualiza el estado de un reporte.
+     *
+     * @param reporteId ID del reporte a actualizar
+     * @param confiable indica si el reporte es confiable
+     * @param solucionado indica si el reporte ha sido solucionado
+     * @return respuesta HTTP indicando el resultado de la operación
+     */
+    public ResponseEntity<?> estadoReporte(Integer reporteId, Boolean confiable, Boolean solucionado) {
+        Reporte reporte = reporteRepository.findById(reporteId)
+                .orElseThrow(() -> new IllegalArgumentException("Reporte con id " + reporteId + " no encontrado"));
+        if (confiable != null) reporte.setConfiable(confiable);
+        if (solucionado != null) reporte.setSolucionado(solucionado);
+        reporteRepository.save(reporte);
+        return ResponseEntity.ok("Reporte actualizado correctamente");
+    }
+    /**
      * Convierte una lista de reportes a una lista de respuestas de reporte.
      *
      * @param reportes lista de reportes a convertir
