@@ -1,6 +1,7 @@
 package com.crimeout.main.controller;
 
 import com.crimeout.main.dto.CrearReporteRequest;
+import com.crimeout.main.dto.EstadoReporteDto;
 import org.springframework.stereotype.Controller;
 import com.crimeout.main.service.ReporteServicio;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,9 @@ public class ReporteController {
     @GetMapping("/user/{id}/reportes")
     public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
+    }
+    @PatchMapping("crimeout/reporte/{id}")
+    public ResponseEntity<?> actualizarEstado(@PathVariable Integer id, @RequestBody EstadoReporteDto request) {
+        return reporteServicio.estadoReporte(id, request);
     }
 }
