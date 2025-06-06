@@ -57,7 +57,7 @@ public class ReporteController {
     public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
     }
-    @PatchMapping("crimeout/reporte/{id}")
+    @PatchMapping("/reporte/{id}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Integer id, @RequestBody EstadoReporteDto request) {
         return reporteServicio.estadoReporte(id, request);
     }
