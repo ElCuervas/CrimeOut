@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import '../providers/reporte_providers.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
 import 'package:frontend/core/utils/iconos_reportes.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/core/utils/jwt_utils.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
@@ -36,6 +37,33 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
     setState(() {
       _userRole = role;
     });
+  }
+}
+Future<void> _handleLogout(BuildContext context) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Cerrar sesión'),
+      content: const Text('¿Estás seguro de que deseas cerrar sesión?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Cerrar sesión'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm == true) {
+    final storage = FlutterSecureStorage(); // sin `const`
+    await storage.deleteAll();
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
   }
 }
 
@@ -187,9 +215,7 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
               Navigator.pushReplacementNamed(context, '/historial-reportes');
               break;
             case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sección Perfil no disponible aún')),
-              );
+              _handleLogout(context); // Llamada sin await
               break;
           }
         },
