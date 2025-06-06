@@ -42,7 +42,7 @@ public class AuthService{
                 .contrasena(passwordEncoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
                 .correo(request.getCorreo())
-                .rol(Rol.JEFE_VECINAL)
+                .rol(Rol.USUARIO)
                 .build();
 
         userRepository.save(user);
