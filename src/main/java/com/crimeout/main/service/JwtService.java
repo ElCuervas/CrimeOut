@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Setter
 @Service
 public class JwtService {
 
     // Clave secreta para firmar el JWT
     private static final String SECRET_KEY="U9PT8QucdOn6OXhx5YnKHle2fyWzXxOE0UBkgTAZe6v4S2di9eAAK9GqXDUNM9mH";
-
+    private Map<String, Object> extraClaims = new HashMap<>();
     public String getToken(UserDetails user) {
-        return getToken(new HashMap<>(), user);
+        return getToken(extraClaims, user);
     }
 
     // Creación del token JWT
@@ -62,7 +64,7 @@ public class JwtService {
 
     public String generateRefreshToken(UserDetails user) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getAuthorities().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 días
                 .signWith(getKey(), SignatureAlgorithm.HS256)

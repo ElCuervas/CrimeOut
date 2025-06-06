@@ -7,13 +7,13 @@ import com.crimeout.main.entity.Rol;
 import com.crimeout.main.entity.Usuario;
 import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +26,13 @@ public class AuthService{
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getRut(), request.getPassword()));
         Usuario user=userRepository.findByRut(request.getRut()).orElseThrow();
-        String token=jwtService.getToken(user);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id", user.getId());
+        extraClaims.put("rol", user.getRol());
+        jwtService.setExtraClaims(extraClaims);
+        String token = jwtService.getToken(user);
         return AuthResponse.builder()
                 .idUsuario(user.getId())
-                .role(String.valueOf(user.getRol()))
                 .token(token)
                 .build();
     }
@@ -39,14 +42,13 @@ public class AuthService{
                 .contrasena(passwordEncoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
                 .correo(request.getCorreo())
-                .rol(Rol.USUARIO)
+                .rol(Rol.JEFE_VECINAL)
                 .build();
 
         userRepository.save(user);
 
         return AuthResponse.builder()
                 .idUsuario(user.getId())
-                .role(String.valueOf(user.getRol()))
                 .token(jwtService.getToken(user))
                 .build();
 
