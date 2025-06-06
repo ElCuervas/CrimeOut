@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/features/auth/presentation/providers/userIdProvider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../providers/reporte_providers.dart';
 import '../../domain/entities/ubicacion_reporte.dart';
-import 'package:frontend/core/utils/iconos_reportes.dart'; // tu clase utilitaria
+import 'package:frontend/core/utils/iconos_reportes.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
   const ReporteMapaScreen({super.key});
@@ -56,11 +57,10 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
 
   Marker _crearMarkerDesdeReporte(UbicacionReporte r, int index) {
     final position = LatLng(r.ubicacion[0], r.ubicacion[1]);
-
     final icono = _iconos?[r.tipoReporte] ?? BitmapDescriptor.defaultMarker;
 
     return Marker(
-      markerId: MarkerId('reporte_$index'),
+      markerId: MarkerId('reporte_\$index'),
       position: position,
       icon: icono,
       infoWindow: InfoWindow(title: r.tipoReporte, snippet: r.detalles),
@@ -70,8 +70,8 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
   @override
   Widget build(BuildContext context) {
     final reportesAsync = ref.watch(reportesMapaProvider);
-
     final iconosListos = _iconos != null;
+    final userRoleAsync = ref.watch(userIdProvider);
 
     return Scaffold(
       body: Stack(
@@ -108,31 +108,50 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Error al cargar reportes: $e')),
+              error: (e, _) => Center(child: Text('Error al cargar reportes: \$e')),
             ),
 
-          // Botón Generar Reporte
+          // Botones para JEFE_VECINAL
           Positioned(
-            bottom: 100,
-            left: 32,
-            right: 32,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/seleccionar-tipo'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6B49F6),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+          bottom: 100,
+          left: 32,
+          right: 32,
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  '/seleccionar-tipo',
+                  arguments: 'personal',
                 ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF6B49F6),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('Generar Reporte', style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
-              child: const Text(
-                'Generar Reporte',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+
+                // Solo se muestra si el usuario es JEFE_VECINAL
+                if (userRoleAsync == 'JEFE_VECINAL') ...[
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      '/seleccionar-tipo',
+                      arguments: 'vecino',
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text('Generar Reporte para Vecino', style: TextStyle(fontSize: 16, color: Colors.white)),
+                  ),
+                ],
+              ],
             ),
           ),
-
-          // Botón superior derecho
           Positioned(
             top: 32,
             right: 16,
@@ -146,29 +165,29 @@ class _ReporteMapaScreenState extends ConsumerState<ReporteMapaScreen> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-      currentIndex: 0,
-      selectedItemColor: Color(0xFF6B49F6),
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushReplacementNamed(context, '/reporte-mapa');
-            break;
-          case 1:
-            Navigator.pushReplacementNamed(context, '/historial-reportes');
-            break;
-          case 2:
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sección Perfil no disponible aún')),
-            );
-            break;
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.place), label: "Reportar"),
-        BottomNavigationBarItem(icon: Icon(Icons.history), label: "Historial"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
-      ],
-    )
+        currentIndex: 0,
+        selectedItemColor: const Color(0xFF6B49F6),
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/reporte-mapa');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/historial-reportes');
+              break;
+            case 2:
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Sección Perfil no disponible aún')),
+              );
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.place), label: "Reportar"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "Historial"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
+        ],
+      ),
     );
   }
 }

@@ -41,6 +41,12 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
     super.initState();
     _obtenerUbicacionActual();
   }
+  late final String modo;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    modo = ModalRoute.of(context)!.settings.arguments as String;
+  }
 
   Future<void> _obtenerUbicacionActual() async {
     // 1) Verificar permisos
@@ -86,30 +92,27 @@ class _SeleccionarUbicacionState extends ConsumerState<SeleccionarUbicacion> {
 
   /// Cada vez que el usuario mueva el marcador, validamos que esté dentro de los 50m.
   void _onMarcadorMovido(LatLng nuevaPos) {
-    print('Intentando mover marcador a: $nuevaPos');
-    if (_ubicacionUsuario == null) return;
+  if (_ubicacionUsuario == null) return;
 
-    final distancia = Geolocator.distanceBetween(
-      _ubicacionUsuario!.latitude,
-      _ubicacionUsuario!.longitude,
-      nuevaPos.latitude,
-      nuevaPos.longitude,
+  final distancia = Geolocator.distanceBetween(
+    _ubicacionUsuario!.latitude,
+    _ubicacionUsuario!.longitude,
+    nuevaPos.latitude,
+    nuevaPos.longitude,
+  );
+
+  if (modo == 'vecino' || distancia <= 50) {
+    setState(() {
+      _ubicacionSeleccionada = nuevaPos;
+    });
+    ref.read(ubicacionSeleccionadaProvider.notifier).state =
+        [nuevaPos.latitude, nuevaPos.longitude];
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Debes seleccionar un punto dentro de los 50 metros.')),
     );
-
-    if (distancia <= 50) {
-      // Dentro del radio permitido
-      setState(() {
-        _ubicacionSeleccionada = nuevaPos;
-      });
-      ref.read(ubicacionSeleccionadaProvider.notifier).state =
-          [nuevaPos.latitude, nuevaPos.longitude];
-    } else {
-      // Fuera del radio: podrías mostrar un SnackBar o mensaje de advertencia
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Debes seleccionar un punto dentro de los 50 metros.')),
-      );
-    }
   }
+}
 
   /// Abre el popup para agregar detalles e imagen
   Future<void> _mostrarPopupDetalles() async {

@@ -7,9 +7,10 @@ class SeleccionarReporteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final String modo = ModalRoute.of(context)!.settings.arguments as String;
     void seleccionarTipo(String tipo) {
       ref.read(tipoReporteSeleccionadoProvider.notifier).state = tipo;
-      Navigator.pushNamed(context, '/seleccionar-ubicacion');
+      Navigator.pushNamed(context, '/seleccionar-ubicacion', arguments: modo);
     }
 
     return Scaffold(
@@ -83,6 +84,7 @@ class _TipoReporteBoton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(

@@ -21,9 +21,10 @@ class LoginNotifier extends StateNotifier<AsyncValue<LoginResponse>> {
   try {
     final response = await _useCase.execute(LoginRequest(rut: rut, contrasena: contrasena));
 
-    // ✅ Guardar token y user_id
+    // ✅ Guardar token ,user_id y role
     await _storage.write(key: 'jwt_token', value: response.token);
     await _storage.write(key: 'user_id', value: response.idUsuario.toString());
+    await _storage.write(key: 'role', value: response.role);
 
     state = AsyncData(response);
   } catch (e, st) {
