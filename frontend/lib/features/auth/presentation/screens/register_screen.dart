@@ -25,7 +25,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Future<void> _onRegister() async {
     final nombre = _nombreCtrl.text.trim();
-    final rut = _rutCtrl.text.trim();
+    final rut = _rutCtrl.text.trim().replaceAll('.', '');
     final correo = _correoCtrl.text.trim();
     final password = _passCtrl.text.trim();
 

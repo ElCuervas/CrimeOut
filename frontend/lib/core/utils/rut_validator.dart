@@ -35,10 +35,14 @@ class RutValidator {
   }
 
   static bool Check(String rut) {
-    // Despejar Puntos
-    var valor = rut.replaceAll('.', '');
+
+    // Validar que el RUT tenga al menos 10 caracteres y el guion esté en la posición 8 (índice 8)
+    if (rut.length < 8 || rut[rut.length-2] != '-') {
+      return false;
+    }
+
     // Despejar Guión
-    valor = valor.replaceAll('-', '');
+    var valor = rut.replaceAll('-', '');
 
     var cuerpo = valor.substring(0, valor.length - 1);
 
