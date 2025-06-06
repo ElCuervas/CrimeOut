@@ -7,6 +7,7 @@ import 'package:frontend/core/utils/iconos_reportes.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+
 class HistorialReportesScreen extends ConsumerStatefulWidget {
   const HistorialReportesScreen({super.key});
 
@@ -22,6 +23,10 @@ class _HistorialReportesScreenState extends ConsumerState<HistorialReportesScree
     super.initState();
     verificarContenidoToken();
     _cargarIconos();
+
+    Future.microtask(() {
+    ref.invalidate(reportHistoryProvider);
+  });
   }
 
   Future<void> _cargarIconos() async {
