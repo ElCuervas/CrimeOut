@@ -1,6 +1,7 @@
 package com.crimeout.main.service;
 
 import com.crimeout.main.dto.CrearReporteRequest;
+import com.crimeout.main.dto.EstadoReporteDto;
 import com.crimeout.main.dto.ListReporteResponse;
 import com.crimeout.main.dto.UsuarioReportesResponse;
 import com.crimeout.main.entity.Reporte;
@@ -99,19 +100,11 @@ public class ReporteServicio {
         }
         return ResponseEntity.ok(listaReportes(reportes));
     }
-    /**
-     * Actualiza el estado de un reporte.
-     *
-     * @param reporteId ID del reporte a actualizar
-     * @param confiable indica si el reporte es confiable
-     * @param solucionado indica si el reporte ha sido solucionado
-     * @return respuesta HTTP indicando el resultado de la operación
-     */
-    public ResponseEntity<?> estadoReporte(Integer reporteId, Boolean confiable, Boolean solucionado) {
+    public ResponseEntity<?> estadoReporte(Integer reporteId, EstadoReporteDto request) {
         Reporte reporte = reporteRepository.findById(reporteId)
                 .orElseThrow(() -> new IllegalArgumentException("Reporte con id " + reporteId + " no encontrado"));
-        if (confiable != null) reporte.setConfiable(confiable);
-        if (solucionado != null) reporte.setSolucionado(solucionado);
+        reporte.setConfiable(request.getConfiable());
+        reporte.setSolucionado(request.getSolucionado());
         reporteRepository.save(reporte);
         return ResponseEntity.ok("Reporte actualizado correctamente");
     }
