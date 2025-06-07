@@ -1,6 +1,7 @@
 package com.crimeout.main.service;
 
 import com.crimeout.main.dto.CrearReporteRequest;
+import com.crimeout.main.dto.EstadoReporteDto;
 import com.crimeout.main.dto.ListReporteResponse;
 import com.crimeout.main.dto.UsuarioReportesResponse;
 import com.crimeout.main.entity.Reporte;
@@ -59,7 +60,6 @@ public class ReporteServicio {
         return ResponseEntity.ok()
                 .body("Reporte creado exitosamente");
     }
-
     /**
      * Obtiene la lista de ubicaciones de todos los reportes.
      *
@@ -85,6 +85,34 @@ public class ReporteServicio {
                 .reportes(listaReportes(reportes))
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
+    }
+/**
+     * Obtiene los reportes por tipo de reporte.
+     *
+     * @param tipoReporte tipo de reporte a buscar
+     * @return respuesta HTTP con la lista de reportes del tipo especificado
+     */
+    public ResponseEntity<List<ListReporteResponse>> reportesPorTipo(String tipoReporte){
+        List<Reporte> reportes = reporteRepository.findByTipoReporteAndSolucionado(TipoReporte.valueOf(tipoReporte),false);
+        if (reportes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(listaReportes(reportes));
+    }
+    /**
+     * Actualiza el estado de un reporte.
+     *
+     * @param reporteId ID del reporte a actualizar
+     * @param request datos del estado del reporte
+     * @return respuesta HTTP indicando el resultado de la operación
+     */
+    public ResponseEntity<?> estadoReporte(Integer reporteId, EstadoReporteDto request) {
+        Reporte reporte = reporteRepository.findById(reporteId)
+                .orElseThrow(() -> new IllegalArgumentException("Reporte con id " + reporteId + " no encontrado"));
+        reporte.setConfiable(request.getConfiable());
+        reporte.setSolucionado(request.getSolucionado());
+        reporteRepository.save(reporte);
+        return ResponseEntity.ok("Reporte actualizado correctamente");
     }
     /**
      * Convierte una lista de reportes a una lista de respuestas de reporte.
