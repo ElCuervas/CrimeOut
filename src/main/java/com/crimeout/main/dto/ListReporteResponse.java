@@ -20,35 +20,35 @@ public class ListReporteResponse {
     /**
      * Tipo de reporte.
      */
-    String tipoReporte;
+    private String tipoReporte;
 
     /**
      * Ubicación del reporte (latitud y longitud).
      */
-    List<Double> ubicacion;
+    private List<Double> ubicacion;
 
     /**
      * Fecha y hora en que se realizó el reporte.
      */
-    LocalDateTime fecha;
+    private LocalDateTime fecha;
 
     /**
      * Imagen asociada al reporte.
      */
-    String imagen;
+    private String imagen;
 
     /**
      * Detalles adicionales del reporte.
      */
-    String detalles;
+    private String detalles;
 
     /**
      * Indica si el reporte es considerado confiable.
      */
-    Boolean confiable;
+    private Boolean confiable;
 
     /**
      * Indica si el reporte ha sido solucionado.
      */
-    Boolean solucionado;
+    private Boolean solucionado;
 }
