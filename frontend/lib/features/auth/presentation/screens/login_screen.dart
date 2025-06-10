@@ -25,6 +25,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    JwtUtils.getKeepSigned().then((value) {
+      if (mounted) {
+        setState(() {
+          _keepSigned = value;
+          print('🔄 guardar secion al inicio del login: $_keepSigned');
+        });
+      }
+    });
   }
 
   void _toggleObscure() => setState(() => _obscure = !_obscure);
@@ -60,6 +68,11 @@ Widget build(BuildContext context) {
         final rol = await JwtUtils.getRol();
 
         if (!context.mounted) return;
+
+        final storage = FlutterSecureStorage();
+        // Guarda el valor de keepSigned antes de hacer login
+        await storage.write(key: 'keep_signed', value: _keepSigned.toString());
+        print('🔄 guardar seción despues del login: $_keepSigned');
 
         switch (rol.toUpperCase()) {
           case 'USUARIO':

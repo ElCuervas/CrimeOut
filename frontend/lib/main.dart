@@ -7,11 +7,22 @@ import 'package:frontend/features/reports/presentation/screens/seleccionar_repor
 import 'package:frontend/features/reports/presentation/screens/seleccionar_ubicacion_screen.dart';
 import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:frontend/features/reports_history/presentation/screens/report_history_screen.dart';
+import 'package:frontend/core/utils/jwt_utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  // Leer keepSigned y para verificar si se debe mantener los datos almacenados
+  await JwtUtils.getKeepSigned().then((value) async {
+  print('🔄 guardar secion al inicio de la app: $value');
+    if (!value) {
+      final storage = FlutterSecureStorage();
+      await storage.deleteAll();
+    }
+  });
 
   print('✅ API Key cargada: ${dotenv.env['GOOGLE_MAPS_API_KEY']}');
 

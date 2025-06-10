@@ -39,4 +39,9 @@ class JwtUtils {
     final token = await _storage.read(key: 'jwt_token');
     return token == null || JwtDecoder.isExpired(token);
   }
+
+  static Future<bool> getKeepSigned() async {
+    final keepSigned = await _storage.read(key: 'keep_signed');
+    return keepSigned == 'true';
+  }
 }
