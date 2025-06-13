@@ -99,32 +99,29 @@ public class ReporteServicio {
         String[] fecha = mes_anio.split("-");
         int mes = Integer.parseInt(fecha[0]);
         int anio = Integer.parseInt(fecha[1]);
-        int numMaltratoAnimal = 0;
-        int numActividadIlicita = 0;
-        int numMicrotrafico = 0;
-        int numBasural = 0;
+        int[] tipo_reporte = {0,0,0,0}; // [microtrafico, actividad_ilicita, maltrato_animal, basural]
         List<Reporte> reportes = reporteRepository.findByMesAndAnio(mes, anio);
         for (Reporte reporte : reportes) {
             switch (reporte.getTipoReporte()) {
                 case MICROTRAFICO:
-                    numMicrotrafico++;
+                    tipo_reporte[0]++;
                     break;
                 case ACTIVIDAD_ILICITA:
-                    numActividadIlicita++;
+                    tipo_reporte[1]++;
                     break;
                 case MALTRATO_ANIMAL:
-                    numMaltratoAnimal++;
+                    tipo_reporte[2]++;
                     break;
                 case BASURAL:
-                    numBasural++;
+                    tipo_reporte[3]++;
                     break;
             }
         }
         AnalisisReportesResponse analisisReportes = AnalisisReportesResponse.builder()
-                .microtrafico(numMicrotrafico)
-                .actividad_ilicita(numActividadIlicita)
-                .maltrato_animal(numMaltratoAnimal)
-                .basural(numBasural)
+                .microtrafico(tipo_reporte[0])
+                .actividad_ilicita(tipo_reporte[1])
+                .maltrato_animal(tipo_reporte[2])
+                .basural(tipo_reporte[3])
                 .build();
         return ResponseEntity.ok(analisisReportes);
     }
