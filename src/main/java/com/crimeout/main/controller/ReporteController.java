@@ -57,6 +57,10 @@ public class ReporteController {
     public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
     }
+    @GetMapping("list/grafico/{mes}")
+    public ResponseEntity<?> analisisReportes(@PathVariable("mes") String mes_anio) {
+        return reporteServicio.analisisReportes(mes_anio);
+    }
     /**
      * Actualiza el estado de un reporte.
      *
@@ -68,4 +72,5 @@ public class ReporteController {
     public ResponseEntity<?> actualizarEstado(@PathVariable Integer id, @RequestBody EstadoReporteDto request) {
         return reporteServicio.estadoReporte(id, request);
     }
+
 }
