@@ -35,19 +35,6 @@ public class ReporteController {
         return ResponseEntity.ok(reporteServicio.crearReporte(request, userId));
     }
     /**
-     * Obtiene la lista de todos los reportes para ubicacion.
-     *
-     * @return respuesta HTTP con la lista de todos los reportes para ubicacion
-     */
-    @GetMapping("/reportes")
-    public ResponseEntity<?> ubicacionReportes() {
-        return reporteServicio.ubicacionReportes();
-    }
-    @GetMapping("/list/municipal/{tipoReporte}/reportes")
-    public ResponseEntity<?> reportesFalsos(@PathVariable("tipoReporte") String tipoReporte) {
-        return reporteServicio.reportesPorTipo(tipoReporte);
-    }
-    /**
      * Obtiene los reportes de un usuario específico.
      *
      * @param userId ID del usuario cuyos reportes se desean obtener
@@ -57,6 +44,30 @@ public class ReporteController {
     public ResponseEntity<?> usuarioReportes(@PathVariable("id") Integer userId) {
         return reporteServicio.usuarioReportes(userId);
     }
+    /**
+     * Obtiene la lista de todos los reportes para ubicacion.
+     *
+     * @return respuesta HTTP con la lista de todos los reportes para ubicacion
+     */
+    @GetMapping("/reportes")
+    public ResponseEntity<?> ubicacionReportes() {
+        return reporteServicio.ubicacionReportes();
+    }
+     /**
+     * Obtiene los reportes por tipo.
+     *
+     * @param tipoReporte tipo de reporte a filtrar
+     * @return respuesta HTTP con la lista de reportes filtrados por tipo
+     */
+    @GetMapping("/list/municipal/{tipoReporte}/reportes")
+    public ResponseEntity<?> reportesFalsos(@PathVariable("tipoReporte") String tipoReporte) {
+        return reporteServicio.reportesPorTipo(tipoReporte);
+    }
+    /**
+     * Obtiene numero de la cantidad de reportes por mes y año para el grafico.
+     * @param mes_anio mes y año en formato "MM-yyyy"
+     * @return respuesta HTTP con la lista de reportes por mes y año
+     */
     @GetMapping("list/grafico/{mes}")
     public ResponseEntity<?> analisisReportes(@PathVariable("mes") String mes_anio) {
         return reporteServicio.analisisReportes(mes_anio);

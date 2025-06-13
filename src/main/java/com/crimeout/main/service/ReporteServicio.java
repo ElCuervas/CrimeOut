@@ -95,6 +95,12 @@ public class ReporteServicio {
         }
         return ResponseEntity.ok(listaReportes(reportes));
     }
+    /**
+     * Obtiene el número de reportes por mes y año para el gráfico.
+     *
+     * @param mes_anio mes y año en formato "MM-yyyy"
+     * @return respuesta HTTP con la lista de reportes por mes y año
+     */
     public ResponseEntity<AnalisisReportesResponse> analisisReportes(String mes_anio) {
         String[] fecha = mes_anio.split("-");
         int mes = Integer.parseInt(fecha[0]);
