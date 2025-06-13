@@ -106,14 +106,14 @@ public class ReporteServicio {
         List<Reporte> reportes = reporteRepository.findByMesAndAnio(mes, anio);
         for (Reporte reporte : reportes) {
             switch (reporte.getTipoReporte()) {
-                case MALTRATO_ANIMAL:
-                    numMaltratoAnimal++;
+                case MICROTRAFICO:
+                    numMicrotrafico++;
                     break;
                 case ACTIVIDAD_ILICITA:
                     numActividadIlicita++;
                     break;
-                case MICROTRAFICO:
-                    numMicrotrafico++;
+                case MALTRATO_ANIMAL:
+                    numMaltratoAnimal++;
                     break;
                 case BASURAL:
                     numBasural++;
@@ -121,10 +121,10 @@ public class ReporteServicio {
             }
         }
         AnalisisReportesResponse analisisReportes = AnalisisReportesResponse.builder()
-                .NumMaltratoAnimal(numMaltratoAnimal)
-                .NumActividadIlicita(numActividadIlicita)
-                .NumMicrotrafico(numMicrotrafico)
-                .NumBasural(numBasural)
+                .microtrafico(numMicrotrafico)
+                .actividad_ilicita(numActividadIlicita)
+                .maltrato_animal(numMaltratoAnimal)
+                .basural(numBasural)
                 .build();
         return ResponseEntity.ok(analisisReportes);
     }
