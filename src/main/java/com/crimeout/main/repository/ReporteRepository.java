@@ -3,6 +3,7 @@ package com.crimeout.main.repository;
 import com.crimeout.main.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -89,4 +90,8 @@ public interface ReporteRepository extends JpaRepository<Reporte, Integer> {
      * @return lista de reportes del usuario en el rango de fechas
      */
     List<Reporte> findByUsuarioAndFechaBetween(Usuario usuario, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+    // En ReporteRepository.java
+    @Query("SELECT r FROM Reporte r WHERE MONTH(r.fecha) = :mes AND YEAR(r.fecha) = :anio")
+    List<Reporte> findByMesAndAnio(@Param("mes") int mes, @Param("anio") int anio);
 }

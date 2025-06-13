@@ -1,9 +1,6 @@
 package com.crimeout.main.service;
 
-import com.crimeout.main.dto.CrearReporteRequest;
-import com.crimeout.main.dto.EstadoReporteDto;
-import com.crimeout.main.dto.ListReporteResponse;
-import com.crimeout.main.dto.UsuarioReportesResponse;
+import com.crimeout.main.dto.*;
 import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Servicio para la gestión de reportes.
  */
@@ -98,6 +94,39 @@ public class ReporteServicio {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(listaReportes(reportes));
+    }
+    public ResponseEntity<AnalisisReportesResponse> analisisReportes(String mes_anio) {
+        String[] fecha = mes_anio.split("-");
+        int mes = Integer.parseInt(fecha[0]);
+        int anio = Integer.parseInt(fecha[1]);
+        int numMaltratoAnimal = 0;
+        int numActividadIlicita = 0;
+        int numMicrotrafico = 0;
+        int numBasural = 0;
+        List<Reporte> reportes = reporteRepository.findByMesAndAnio(mes, anio);
+        for (Reporte reporte : reportes) {
+            switch (reporte.getTipoReporte()) {
+                case MALTRATO_ANIMAL:
+                    numMaltratoAnimal++;
+                    break;
+                case ACTIVIDAD_ILICITA:
+                    numActividadIlicita++;
+                    break;
+                case MICROTRAFICO:
+                    numMicrotrafico++;
+                    break;
+                case BASURAL:
+                    numBasural++;
+                    break;
+            }
+        }
+        AnalisisReportesResponse analisisReportes = AnalisisReportesResponse.builder()
+                .NumMaltratoAnimal(numMaltratoAnimal)
+                .NumActividadIlicita(numActividadIlicita)
+                .NumMicrotrafico(numMicrotrafico)
+                .NumBasural(numBasural)
+                .build();
+        return ResponseEntity.ok(analisisReportes);
     }
     /**
      * Actualiza el estado de un reporte.
