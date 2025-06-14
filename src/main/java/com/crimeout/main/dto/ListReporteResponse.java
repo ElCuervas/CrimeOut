@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListReporteResponse {
-
+    private Integer idReporte;
     /**
      * Tipo de reporte.
      */

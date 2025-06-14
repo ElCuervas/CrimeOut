@@ -82,7 +82,7 @@ public class ReporteServicio {
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
     }
-/**
+    /**
      * Obtiene los reportes por tipo de reporte.
      *
      * @param tipoReporte tipo de reporte a buscar
@@ -164,6 +164,7 @@ public class ReporteServicio {
                         );
                     } catch (Exception ignored) {}
                     return ListReporteResponse.builder()
+                            .idReporte(reporte.getIdReporte())
                             .tipoReporte(reporte.getTipoReporte().name())
                             .ubicacion(ubicacion)
                             .fecha(reporte.getFecha())
