@@ -24,7 +24,7 @@ class MunicipalHomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.bar_chart),
             onPressed: () {
-              // TODO: Navegar a pantalla de gráfico de reportes
+              Navigator.pushNamed(context, '/municipal-grafico');
             },
             tooltip: 'Gráfico',
           ),
