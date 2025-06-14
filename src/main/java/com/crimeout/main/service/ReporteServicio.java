@@ -1,9 +1,6 @@
 package com.crimeout.main.service;
 
-import com.crimeout.main.dto.CrearReporteRequest;
-import com.crimeout.main.dto.EstadoReporteDto;
-import com.crimeout.main.dto.ListReporteResponse;
-import com.crimeout.main.dto.UsuarioReportesResponse;
+import com.crimeout.main.dto.*;
 import com.crimeout.main.entity.Reporte;
 import com.crimeout.main.entity.TipoReporte;
 import com.crimeout.main.entity.Usuario;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Servicio para la gestión de reportes.
  */
@@ -86,7 +82,7 @@ public class ReporteServicio {
                 .build();
         return ResponseEntity.ok(ReportesUsuario);
     }
-/**
+    /**
      * Obtiene los reportes por tipo de reporte.
      *
      * @param tipoReporte tipo de reporte a buscar
@@ -98,6 +94,42 @@ public class ReporteServicio {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(listaReportes(reportes));
+    }
+    /**
+     * Obtiene el número de reportes por mes y año para el gráfico.
+     *
+     * @param mes_anio mes y año en formato "MM-yyyy"
+     * @return respuesta HTTP con la lista de reportes por mes y año
+     */
+    public ResponseEntity<AnalisisReportesResponse> analisisReportes(String mes_anio) {
+        String[] fecha = mes_anio.split("-");
+        int mes = Integer.parseInt(fecha[0]);
+        int anio = Integer.parseInt(fecha[1]);
+        int[] tipo_reporte = {0,0,0,0}; // [microtrafico, actividad_ilicita, maltrato_animal, basural]
+        List<Reporte> reportes = reporteRepository.findByMesAndAnio(mes, anio);
+        for (Reporte reporte : reportes) {
+            switch (reporte.getTipoReporte()) {
+                case MICROTRAFICO:
+                    tipo_reporte[0]++;
+                    break;
+                case ACTIVIDAD_ILICITA:
+                    tipo_reporte[1]++;
+                    break;
+                case MALTRATO_ANIMAL:
+                    tipo_reporte[2]++;
+                    break;
+                case BASURAL:
+                    tipo_reporte[3]++;
+                    break;
+            }
+        }
+        AnalisisReportesResponse analisisReportes = AnalisisReportesResponse.builder()
+                .microtrafico(tipo_reporte[0])
+                .actividad_ilicita(tipo_reporte[1])
+                .maltrato_animal(tipo_reporte[2])
+                .basural(tipo_reporte[3])
+                .build();
+        return ResponseEntity.ok(analisisReportes);
     }
     /**
      * Actualiza el estado de un reporte.
@@ -132,6 +164,7 @@ public class ReporteServicio {
                         );
                     } catch (Exception ignored) {}
                     return ListReporteResponse.builder()
+                            .idReporte(reporte.getIdReporte())
                             .tipoReporte(reporte.getTipoReporte().name())
                             .ubicacion(ubicacion)
                             .fecha(reporte.getFecha())
