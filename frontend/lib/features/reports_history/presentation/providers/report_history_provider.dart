@@ -3,7 +3,6 @@ import '../../data/datasources/report_history_remote_data_source.dart';
 import '../../data/repositories/report_history_repository_impl.dart';
 import '../../domain/usecases/get_user_reports_usecase.dart';
 import '../../domain/entities/report_history.dart';
-import 'package:frontend/core/utils/jwt_utils.dart';
 import 'package:frontend/features/auth/presentation/providers/userIdProvider.dart';
 
 final reportHistoryProvider = FutureProvider<ReporteUsuario>((ref) async {

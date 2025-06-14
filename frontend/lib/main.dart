@@ -9,6 +9,8 @@ import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:frontend/features/reports_history/presentation/screens/report_history_screen.dart';
 import 'package:frontend/core/utils/jwt_utils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/features/municipal_reports/presentation/screens/municipal_report_list_screen.dart';
+import 'package:frontend/features/municipal_reports/presentation/screens/municipal_home_screen.dart';
 
 
 Future<void> main() async {
@@ -46,6 +48,8 @@ class CrimeOutApp extends StatelessWidget {
     '/seleccionar-tipo': (context) => const SeleccionarReporteScreen(),
     '/seleccionar-ubicacion': (context) => const SeleccionarUbicacion(),
     '/historial-reportes': (context) =>  HistorialReportesScreen(),
+    '/lista-reportes-municipal': (context) =>  MunicipalListaReportesScreen(),
+    '/municipal-reportes': (context) => const MunicipalHomeScreen(),
   },
 );
   }
