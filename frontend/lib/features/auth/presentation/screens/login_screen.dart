@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/auth_models.dart';
 import '../providers/login_provider.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_submit_button.dart';
@@ -80,7 +79,7 @@ Widget build(BuildContext context) {
             Navigator.pushReplacementNamed(context, '/reporte-mapa');
             break;
           case 'MUNICIPAL':
-            Navigator.pushReplacementNamed(context, '/vista-policia');
+            Navigator.pushReplacementNamed(context, '/municipal-reportes');
             break;
           case 'ADMIN':
             Navigator.pushReplacementNamed(context, '/vista-admin');

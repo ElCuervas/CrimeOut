@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/report_history.dart';
 import '../widgets/reporte_historial_item.dart';
 import '../providers/report_history_provider.dart';
 import 'package:frontend/core/utils/iconos_reportes.dart';
