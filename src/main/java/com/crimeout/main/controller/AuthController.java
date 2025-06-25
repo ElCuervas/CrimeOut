@@ -5,7 +5,6 @@ import com.crimeout.main.dto.LoginRequest;
 import com.crimeout.main.dto.RegisterRequest;
 import com.crimeout.main.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,7 +31,11 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authService.register(request,1));
+    }
+    @PostMapping(value = "/admin/register")
+    public ResponseEntity<AuthResponse> registerMunicipal(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request,2));
     }
 
 }

@@ -36,13 +36,17 @@ public class AuthService{
                 .token(token)
                 .build();
     }
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request, int tipoUsuario) {//1 para usuario, 2 para admin
+        Rol rol = Rol.USUARIO;
+        if(tipoUsuario==2){
+            rol = Rol.MUNICIPAL;
+        }
         Usuario user = Usuario.builder()
                 .rut(request.getRut())
                 .contrasena(passwordEncoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
                 .correo(request.getCorreo())
-                .rol(Rol.USUARIO)
+                .rol(rol)
                 .build();
 
         userRepository.save(user);
