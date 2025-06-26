@@ -28,6 +28,18 @@ public class UsuarioServicio {
         return usuarioRepository.findByRut(rut)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
+    public ResponseEntity<List<UsuarioResponse>> listUsuariosPorNombre(String nombre) {
+        List<Usuario> usuario = usuarioRepository.findByNombreContainingIgnoreCase(nombre);
+        List<UsuarioResponse> usuarioResponse = usuario.stream()
+                .map(u -> UsuarioResponse.builder()
+                        .id(u.getId())
+                        .nombre(u.getNombre())
+                        .rol(u.getRol().name())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(usuarioResponse);
+
+    }
     public ResponseEntity<UsuarioResponse> buscarUsuarioPorId(Integer id) {
         Usuario usuario = findById(id);
         UsuarioResponse usuarioResponse = UsuarioResponse.builder()
