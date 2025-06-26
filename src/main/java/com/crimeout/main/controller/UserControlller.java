@@ -27,6 +27,10 @@ public class UserControlller {
     public ResponseEntity<?> buscarUsuariosPorRol(@PathVariable String rol) {
         return usuarioServicio.listUsuariosPorRol(rol);
     }
+    @GetMapping("list/estado-sistema")
+    public ResponseEntity<?> estadoSistemaResponse() {
+        return usuarioServicio.estadoSistema();
+    }
     @PatchMapping("/usuario/{id}")
     public ResponseEntity<?> cambiarDatos(@PathVariable Integer id, @RequestBody UsuarioDatosDto usuarioDatosDto) {
         return usuarioServicio.cambiarDatos(id, usuarioDatosDto);
