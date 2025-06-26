@@ -2,6 +2,7 @@ package com.crimeout.main.service;
 
 import com.crimeout.main.dto.UsuarioDatosDto;
 import com.crimeout.main.dto.UsuarioResponse;
+import com.crimeout.main.entity.Rol;
 import com.crimeout.main.entity.Usuario;
 import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +18,24 @@ public class UsuarioServicio {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
     public Usuario findById(Integer id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
-    public Usuario findByUsername(String rut) {
-        return usuarioRepository.findByRut(rut)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    }
     public ResponseEntity<List<UsuarioResponse>> listUsuariosPorNombre(String nombre) {
         List<Usuario> usuario = usuarioRepository.findByNombreContainingIgnoreCase(nombre);
+        List<UsuarioResponse> usuarioResponse = usuario.stream()
+                .map(u -> UsuarioResponse.builder()
+                        .id(u.getId())
+                        .nombre(u.getNombre())
+                        .rol(u.getRol().name())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(usuarioResponse);
+
+    }
+    public ResponseEntity<List<UsuarioResponse>> listUsuariosPorRol(String rol) {
+        List<Usuario> usuario = usuarioRepository.findAllByRol(Rol.valueOf(rol));
         List<UsuarioResponse> usuarioResponse = usuario.stream()
                 .map(u -> UsuarioResponse.builder()
                         .id(u.getId())
