@@ -56,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
 Widget build(BuildContext context) {
-  final theme = Theme.of(context);
+
   final loginState = ref.watch(loginProvider);
   final isLoading = loginState is AsyncLoading;
 

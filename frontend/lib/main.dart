@@ -12,7 +12,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/features/municipal_reports/presentation/screens/municipal_report_list_screen.dart';
 import 'package:frontend/features/municipal_reports/presentation/screens/municipal_home_screen.dart';
 import 'package:frontend/features/grafico_reportes/presentation/screens/municipal_grafico_screen.dart';
-
+import 'package:frontend/features/admin_landing/presentation/screens/admin_home_screen.dart';
+import 'package:frontend/features/crear_municipal/presentation/screens/crear_cuenta_municipal_screen.dart';
+import 'package:frontend/features/admin_reportes/presentation/screens/admin_reportes_sospechosos_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
@@ -51,6 +53,9 @@ class CrimeOutApp extends StatelessWidget {
     '/lista-reportes-municipal': (context) =>  MunicipalListaReportesScreen(),
     '/municipal-reportes': (context) => const MunicipalHomeScreen(),
     '/municipal-grafico': (context) => const MunicipalGraficoScreen(),
+    '/admin-home': (context) => const AdminHomeScreen(),
+    '/admin-create-municipal': (context) => const CrearCuentaMunicipalScreen(),
+    '/admin-reportes': (context) => const AdminReportesSospechososScreen(),
   },
 );
   }
