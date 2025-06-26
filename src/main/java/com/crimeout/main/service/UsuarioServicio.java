@@ -3,6 +3,7 @@ package com.crimeout.main.service;
 import com.crimeout.main.entity.Usuario;
 import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,10 @@ public class UsuarioServicio {
     public Usuario findByUsername(String rut) {
         return usuarioRepository.findByRut(rut)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+    public ResponseEntity<?> deleteById(Integer id) {
+        Usuario usuario = findById(id);
+        usuarioRepository.delete(usuario);
+        return ResponseEntity.ok().body("Usuario eliminado exitosamente");
     }
 }
