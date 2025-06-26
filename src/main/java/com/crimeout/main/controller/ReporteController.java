@@ -53,12 +53,18 @@ public class ReporteController {
     public ResponseEntity<?> ubicacionReportes() {
         return reporteServicio.ubicacionReportes();
     }
+
+    @GetMapping("/reportes/sospechosos")
+    public ResponseEntity<?> reportesPorNoConfiable(){
+        return reporteServicio.reportesPorNoConfiable();
+    }
      /**
      * Obtiene los reportes por tipo.
      *
      * @param tipoReporte tipo de reporte a filtrar
      * @return respuesta HTTP con la lista de reportes filtrados por tipo
      */
+
     @GetMapping("/list/municipal/{tipoReporte}/reportes")
     public ResponseEntity<?> reportesFalsos(@PathVariable("tipoReporte") String tipoReporte) {
         return reporteServicio.reportesPorTipo(tipoReporte);

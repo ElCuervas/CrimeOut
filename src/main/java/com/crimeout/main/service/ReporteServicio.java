@@ -95,6 +95,13 @@ public class ReporteServicio {
         }
         return ResponseEntity.ok(listaReportes(reportes));
     }
+    public ResponseEntity<List<ListReporteResponse>> reportesPorNoConfiable() {
+        List<Reporte> reportes = reporteRepository.findByConfiable(false);
+        if (reportes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(listaReportes(reportes));
+    }
     /**
      * Obtiene el número de reportes por mes y año para el gráfico.
      *

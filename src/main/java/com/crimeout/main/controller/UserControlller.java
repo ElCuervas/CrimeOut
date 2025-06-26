@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/crimeout/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/crimeout", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserControlller {
     private final UsuarioServicio usuarioServicio;
 
