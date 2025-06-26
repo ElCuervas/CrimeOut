@@ -1,6 +1,7 @@
 package com.crimeout.main.service;
 
 import com.crimeout.main.dto.UsuarioDatosDto;
+import com.crimeout.main.dto.UsuarioResponse;
 import com.crimeout.main.entity.Usuario;
 import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,15 @@ public class UsuarioServicio {
     public Usuario findByUsername(String rut) {
         return usuarioRepository.findByRut(rut)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+    public ResponseEntity<UsuarioResponse> buscarUsuarioPorId(Integer id) {
+        Usuario usuario = findById(id);
+        UsuarioResponse usuarioResponse = UsuarioResponse.builder()
+                .id(usuario.getId())
+                .nombre(usuario.getNombre())
+                .rol(usuario.getRol().name())
+                .build();
+        return ResponseEntity.ok(usuarioResponse);
     }
     public ResponseEntity<?> cambiarDatos(Integer id, UsuarioDatosDto usuarioDatosDto) {
         Usuario usuario = findById(id);

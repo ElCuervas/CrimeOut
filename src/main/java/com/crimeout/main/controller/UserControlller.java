@@ -1,6 +1,7 @@
 package com.crimeout.main.controller;
 
 import com.crimeout.main.dto.UsuarioDatosDto;
+import com.crimeout.main.dto.UsuarioResponse;
 import com.crimeout.main.service.UsuarioServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserControlller {
     private final UsuarioServicio usuarioServicio;
 
+    @GetMapping("/usuario/buscar/{id}")
+    public ResponseEntity<UsuarioResponse> buscarUsuario(@PathVariable Integer id) {
+        return usuarioServicio.buscarUsuarioPorId(id);
+    }
     @PatchMapping("/usuario/{id}")
     public ResponseEntity<?> cambiarDatos(@PathVariable Integer id, @RequestBody UsuarioDatosDto usuarioDatosDto) {
         return usuarioServicio.cambiarDatos(id, usuarioDatosDto);
