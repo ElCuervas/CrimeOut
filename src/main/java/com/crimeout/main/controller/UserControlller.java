@@ -1,5 +1,6 @@
 package com.crimeout.main.controller;
 
+import com.crimeout.main.dto.SugerenciaRequest;
 import com.crimeout.main.dto.UsuarioDatosDto;
 import com.crimeout.main.dto.UsuarioResponse;
 import com.crimeout.main.service.UsuarioServicio;
@@ -30,6 +31,11 @@ public class UserControlller {
     @GetMapping("list/estado-sistema")
     public ResponseEntity<?> estadoSistemaResponse() {
         return usuarioServicio.estadoSistema();
+    }
+    @PostMapping("/sugerencia")
+    public ResponseEntity<?> enviarSugerencia(@RequestBody SugerenciaRequest request) {
+        usuarioServicio.enviarSugerencia(request.getMensaje());
+        return ResponseEntity.ok("Sugerencia enviada correctamente");
     }
     @PatchMapping("/usuario/{id}")
     public ResponseEntity<?> cambiarDatos(@PathVariable Integer id, @RequestBody UsuarioDatosDto usuarioDatosDto) {

@@ -10,9 +10,10 @@ import com.crimeout.main.repository.ReporteRepository;
 import com.crimeout.main.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.mail.javamail.JavaMailSender;
 import java.util.List;
 
 @Service
@@ -21,6 +22,7 @@ public class UsuarioServicio {
     private final UsuarioRepository usuarioRepository;
     private final ReporteRepository reporteRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender javaMailSender;
 
     public Usuario findById(Integer id) {
         return usuarioRepository.findById(id)
@@ -58,6 +60,13 @@ public class UsuarioServicio {
                 .rol(usuario.getRol().name())
                 .build();
         return ResponseEntity.ok(usuarioResponse);
+    }
+    public void enviarSugerencia(String mensaje) {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo("j.contreras26@ufromail.cl");
+        mail.setSubject("Nueva sugerencia");
+        mail.setText(mensaje);
+        javaMailSender.send(mail);
     }
     public ResponseEntity<?> cambiarDatos(Integer id, UsuarioDatosDto usuarioDatosDto) {
         Usuario usuario = findById(id);
