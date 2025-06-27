@@ -10,13 +10,22 @@ class UsuarioConReportesModel extends UsuarioConReportes {
   });
 
   factory UsuarioConReportesModel.fromJson(Map<String, dynamic> json) {
-    return UsuarioConReportesModel(
-      idUsuario: json['idUsuario'],
-      nombreUsuario: json['nombreUsuario'],
-      roles: List<String>.from(json['roles']),
-      reportes: (json['reportes'] as List)
-          .map((e) => ReporteUsuarioModel.fromJson(e).toEntity())
-          .toList(),
-    );
-  }
+  print("🔥 JSON roles: ${json['roles']}");
+  print("🔥 JSON reportes: ${json['reportes']}");
+
+  final roles = json['roles'] is String
+      ? (json['roles'] as String).split(',').map((r) => r.trim()).toList()
+      : List<String>.from(json['roles']);
+
+  final reportes = (json['reportes'] as List)
+      .map((e) => ReporteUsuarioModel.fromJson(e).toEntity())
+      .toList();
+
+  return UsuarioConReportesModel(
+    idUsuario: json['idUsuario'],
+    nombreUsuario: json['nombreUsuario'],
+    roles: roles,
+    reportes: reportes,
+  );
+}
 }

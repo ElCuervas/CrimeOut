@@ -78,6 +78,10 @@ flutter:
     - icons/maltrato_animal.png
     - icons/basural.png
     - icons/microtrafico.png
+    - icons/actividad_ilicita_circulo.png
+    - icons/maltrato_animal_circulo.png
+    - icons/basural_circulo.png
+    - icons/microtrafico_circulo.png
     - icons/topo_wave.png
     - .env
     - icons/topo_clean.png

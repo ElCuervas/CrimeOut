@@ -27,12 +27,13 @@ class ReporteMunicipalRemoteDataSource {
 
   /// 🔁 PATCH para actualizar estado del reporte
   Future<void> actualizarEstadoReporte({
-    required int id,
-    required bool confiable,
-    required bool solucionado,
-  }) async {
-    final token = await _storage.read(key: 'jwt_token');
+  required int id,
+  required bool confiable,
+  required bool solucionado,
+}) async {
+  final token = await _storage.read(key: 'jwt_token');
 
+  try {
     final response = await _dio.patch(
       '$_baseUrl/reporte/$id',
       data: {
@@ -42,12 +43,22 @@ class ReporteMunicipalRemoteDataSource {
       options: Options(headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+        'Accept': 'application/json', // 🔹 Importante si el backend necesita esto
       }),
     );
+
+    print("📦 Respuesta bruta: ${response.data}");
 
     if (response.statusCode != 200) {
       throw Exception('Error al actualizar reporte');
     }
+  } on DioException catch (e) {
+    print('🚨 DioException: ${e.response?.data}');
+    rethrow;
+  } catch (e) {
+    print('🚨 Error desconocido: $e');
+    rethrow;
   }
+}
 }
 
