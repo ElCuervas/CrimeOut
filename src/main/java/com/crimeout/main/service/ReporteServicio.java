@@ -95,12 +95,20 @@ public class ReporteServicio {
         }
         return ResponseEntity.ok(listaReportes(reportes));
     }
-    public ResponseEntity<List<ListReporteResponse>> reportesPorNoConfiable() {
+    public ResponseEntity<List<ReportesSospechososResponse>> reportesPorNoConfiable() {
         List<Reporte> reportes = reporteRepository.findByConfiable(false);
         if (reportes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(listaReportes(reportes));
+        List<ReportesSospechososResponse> listaReportes = reportes.stream()
+                .map(reporte -> ReportesSospechososResponse.builder()
+                        .id_usuario(reporte.getIdReporte())
+                        .tipoReporte(reporte.getTipoReporte())
+                        .imagenUrl(reporte.getImagen())
+                        .detalles(reporte.getDetalles())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(listaReportes);
     }
     /**
      * Obtiene el número de reportes por mes y año para el gráfico.
