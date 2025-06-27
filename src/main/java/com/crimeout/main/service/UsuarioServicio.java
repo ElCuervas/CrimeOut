@@ -88,7 +88,7 @@ public class UsuarioServicio {
         long totalReportes = reporteRepository.count();
         List<Reporte> reportesSospechosos = reporteRepository.findByConfiable(false);
         EstadoSistemaResponse estadoSistemaResponse = EstadoSistemaResponse.builder()
-                .total_ususarios(Math.toIntExact(totalUsuarios))
+                .total_usuarios(Math.toIntExact(totalUsuarios))
                 .total_reportes(Math.toIntExact(totalReportes))
                 .reportes_sospechosos(reportesSospechosos.size())
                 .build();
