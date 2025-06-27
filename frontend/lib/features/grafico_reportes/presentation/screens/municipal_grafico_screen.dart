@@ -109,12 +109,36 @@ class _MunicipalGraficoScreenState extends ConsumerState<MunicipalGraficoScreen>
   }
 
   Widget _buildResumen(String titulo, int cantidad) {
-    return Column(
+  return SizedBox(
+    width: MediaQuery.of(context).size.width * 0.45, // 2 por fila
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(titulo, style: const TextStyle(fontSize: 14)),
-        Text('$cantidad Reportes', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(
+          titulo,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Color(0xFF6F6F6F), // gris tenue
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          NumberFormat.decimalPattern('es').format(cantidad),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2E2E2E), // negro grisáceo
+          ),
+        ),
+        const Text(
+          'Reportes',
+          style: TextStyle(
+            fontSize: 13,
+            color: Color(0xFF6F6F6F),
+          ),
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
 }

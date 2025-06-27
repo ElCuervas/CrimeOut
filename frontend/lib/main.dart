@@ -15,8 +15,12 @@ import 'package:frontend/features/grafico_reportes/presentation/screens/municipa
 import 'package:frontend/features/admin_landing/presentation/screens/admin_home_screen.dart';
 import 'package:frontend/features/crear_municipal/presentation/screens/crear_cuenta_municipal_screen.dart';
 import 'package:frontend/features/admin_reportes/presentation/screens/admin_reportes_sospechosos_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es');
   await dotenv.load(fileName: ".env");
 
   // Leer keepSigned y para verificar si se debe mantener los datos almacenados
