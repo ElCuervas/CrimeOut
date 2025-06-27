@@ -5,6 +5,7 @@ import '../providers/perfil_provider.dart';
 import '../../data/services/perfil_service.dart';
 import 'package:frontend/core/global_widgets/popup_sugerencia_desarrolladores.dart';
 import 'package:frontend/core/global_widgets/popup_editar_perfil.dart';
+import 'package:frontend/core/global_widgets/popup_eliminar_cuenta.dart';
 
 class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
   const PerfilUsuarioMunicipalScreen({super.key});
@@ -56,6 +57,47 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
       );
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> _eliminarCuenta(WidgetRef ref, BuildContext context) async {
+    try {
+      // Obtener el ID del usuario antes de limpiar el storage
+      const storage = FlutterSecureStorage();
+      final userIdString = await storage.read(key: 'user_id');
+      if (userIdString == null) {
+        throw Exception('No se encontró el ID del usuario');
+      }
+      
+      final userId = int.tryParse(userIdString);
+      if (userId == null) {
+        throw Exception('ID de usuario inválido');
+      }
+
+      // Limpiar todos los datos del storage
+      await storage.deleteAll();
+      
+      // Limpiar el estado del provider
+      ref.read(perfilProvider.notifier).limpiarDatos();
+
+      // Redirigir al login inmediatamente
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      }
+
+      // Eliminar el usuario del servidor en segundo plano
+      // Usamos un Future sin await para que no bloquee
+      Future.microtask(() async {
+        try {
+          await ref.read(perfilProvider.notifier).eliminarUsuarioDirecto(userId);
+        } catch (e) {
+          // Si falla la eliminación del servidor, no mostramos error al usuario
+          // ya que desde su perspectiva la cuenta ya fue "eliminada"
+          print('Error al eliminar usuario del servidor: $e');
+        }
+      });
+    } catch (e) {
+      rethrow; // El popup manejará el error
     }
   }
 
@@ -269,7 +311,13 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
                     iconColor: const Color(0xFFE53E3E),
                     title: 'Borrar cuenta',
                     onTap: () {
-                      _showDeleteAccountDialog(context);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => PopupEliminarCuenta(
+                          onEliminarCuenta: _eliminarCuenta,
+                        ),
+                      );
                     },
                     isDestructive: true,
                   ),
@@ -318,42 +366,6 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
       ),
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-    );
-  }
-
-  Future<void> _showDeleteAccountDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text(
-          'Borrar cuenta',
-          style: TextStyle(color: Color(0xFFE53E3E)),
-        ),
-        content: const Text(
-          '¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Funcionalidad en desarrollo'),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE53E3E),
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Borrar'),
-          ),
-        ],
-      ),
     );
   }
 }

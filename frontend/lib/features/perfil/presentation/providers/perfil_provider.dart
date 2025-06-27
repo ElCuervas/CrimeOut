@@ -121,6 +121,45 @@ class PerfilNotifier extends StateNotifier<PerfilState> {
     }
   }
 
+  Future<void> eliminarUsuario() async {
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+      
+      // Obtener el ID del usuario actual
+      final userIdString = await storage.read(key: 'user_id');
+      if (userIdString == null) {
+        throw Exception('No se encontró el ID del usuario');
+      }
+      
+      final userId = int.tryParse(userIdString);
+      if (userId == null) {
+        throw Exception('ID de usuario inválido');
+      }
+      
+      // Llamar al servicio para eliminar el usuario
+      await PerfilService.eliminarUsuario(userId);
+      
+      // Limpiar el estado después de eliminar
+      state = const PerfilState();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+      throw Exception('Error al eliminar usuario: $e');
+    }
+  }
+
+  Future<void> eliminarUsuarioDirecto(int userId) async {
+    try {
+      // Llamar al servicio para eliminar el usuario directamente con el ID
+      await PerfilService.eliminarUsuario(userId);
+    } catch (e) {
+      // No lanzamos excepción aquí para no interrumpir el flujo de logout
+      print('Error al eliminar usuario del servidor: $e');
+    }
+  }
+
   void limpiarDatos() {
     state = const PerfilState();
   }

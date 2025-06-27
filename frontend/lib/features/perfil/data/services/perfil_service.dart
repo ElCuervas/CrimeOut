@@ -177,4 +177,47 @@ class PerfilService {
       throw Exception('Error de conexión: $e');
     }
   }
+
+  static Future<void> eliminarUsuario(int userId) async {
+    try {
+      final token = await storage.read(key: 'jwt_token');
+      
+      if (token == null) {
+        throw Exception('No hay token de autenticación');
+      }
+
+      final response = await http.delete(
+        Uri.parse('$baseUrl/user/$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Usuario eliminado exitosamente
+        if (response.body.isNotEmpty) {
+          try {
+            final data = json.decode(response.body);
+            print('Usuario eliminado: ${data['message']}');
+          } catch (e) {
+            print('Error parsing JSON: $e');
+            // Si no se puede parsear como JSON pero el status es 201, considerarlo exitoso
+          }
+        }
+        return;
+      } else if (response.statusCode == 404) {
+        try {
+          final errorData = json.decode(response.body);
+          throw Exception(errorData['message'] ?? 'Usuario no encontrado');
+        } catch (e) {
+          throw Exception('Usuario no encontrado');
+        }
+      } else {
+        throw Exception('Error al eliminar usuario: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
 }
