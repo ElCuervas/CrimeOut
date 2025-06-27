@@ -176,9 +176,7 @@ class _MunicipalMapaReportesScreenState extends ConsumerState<MunicipalMapaRepor
             case 1:
               break;
             case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sección Perfil no disponible aún')),
-              );
+              Navigator.pushReplacementNamed(context, '/perfil-usuario-municipal');
               break;
           }
         },
