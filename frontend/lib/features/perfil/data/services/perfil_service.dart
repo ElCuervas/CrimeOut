@@ -54,4 +54,68 @@ class PerfilService {
       throw Exception('Error al obtener usuario actual: $e');
     }
   }
+
+  static Future<void> enviarSugerencia(String mensaje) async {
+    try {
+      final token = await storage.read(key: 'jwt_token');
+      final userIdString = await storage.read(key: 'user_id');
+      
+      if (token == null) {
+        throw Exception('No hay token de autenticación');
+      }
+      
+      if (userIdString == null) {
+        throw Exception('No se encontró el ID del usuario');
+      }
+      
+      final userId = int.tryParse(userIdString);
+      if (userId == null) {
+        throw Exception('ID de usuario inválido');
+      }
+
+      final requestBody = {
+        'idUsuario': userId,
+        'mensaje': mensaje,
+      };
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/sugerencia'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(requestBody),
+      );
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('Response Headers: ${response.headers}');
+
+      if (response.statusCode == 200) {
+        // Verificar si la respuesta tiene contenido antes de decodificar
+        if (response.body.isNotEmpty) {
+          try {
+            final data = json.decode(response.body);
+            print('Parsed JSON: $data');
+          } catch (e) {
+            print('Error parsing JSON: $e');
+            // Si no se puede parsear como JSON pero el status es 200, considerarlo exitoso
+          }
+        }
+        // Sugerencia enviada exitosamente
+        return;
+      } else if (response.statusCode == 400) {
+        try {
+          final errorData = json.decode(response.body);
+          throw Exception(errorData['message'] ?? 'Error al crear sugerencia');
+        } catch (e) {
+          throw Exception('Error al crear sugerencia - Status: ${response.statusCode}');
+        }
+      } else {
+        throw Exception('Error al enviar sugerencia: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
 }

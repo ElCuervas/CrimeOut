@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../providers/perfil_provider.dart';
+import '../../data/services/perfil_service.dart';
+import 'package:frontend/core/global_widgets/popup_sugerencia_desarrolladores.dart';
 
 class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
   const PerfilUsuarioMunicipalScreen({super.key});
 
-  Future<void> _handleLogout(BuildContext context) async {
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -28,174 +30,38 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
     if (confirm == true) {
       const storage = FlutterSecureStorage();
       await storage.deleteAll();
+      // Limpiar el estado del provider
+      ref.read(perfilProvider.notifier).limpiarDatos();
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       }
     }
   }
 
+  Future<void> _enviarSugerencia(String mensaje) async {
+    try {
+      await PerfilService.enviarSugerencia(mensaje);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final perfilAsync = ref.watch(perfilProvider);
+    final perfilState = ref.watch(perfilProvider);
+    
+    // Inicializar el auto-refresh provider para detectar cambios en user ID
+    ref.watch(autoRefreshPerfilProvider);
+
+    // Cargar los datos del usuario cuando se monta el widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(perfilProvider.notifier).cargarUsuarioActual();
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
-        child: perfilAsync.when(
-          data: (usuario) => SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Header con información del usuario
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        usuario.nombre,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'demo@email.com', // Email hardcodeado como en la imagen
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 24),
-                
-                // Opciones del menú
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      _buildMenuOption(
-                        icon: Icons.code,
-                        iconColor: const Color(0xFF8B7CF6),
-                        title: 'Sugerencias a desarrolladores',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Funcionalidad en desarrollo'),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
-                      const SizedBox(height: 8),
-                      _buildMenuOption(
-                        icon: Icons.edit,
-                        iconColor: Colors.grey[600]!,
-                        title: 'Editar datos de perfil',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Funcionalidad en desarrollo'),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
-                      const SizedBox(height: 8),
-                      _buildMenuOption(
-                        icon: Icons.logout,
-                        iconColor: const Color(0xFF4A90E2),
-                        title: 'Cerrar sesión',
-                        onTap: () => _handleLogout(context),
-                      ),
-                      const SizedBox(height: 8),
-                      const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
-                      const SizedBox(height: 8),
-                      _buildMenuOption(
-                        icon: Icons.delete_forever,
-                        iconColor: const Color(0xFFE53E3E),
-                        title: 'Borrar cuenta',
-                        onTap: () {
-                          _showDeleteAccountDialog(context);
-                        },
-                        isDestructive: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
-          error: (error, stack) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.red[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error al cargar perfil',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  error.toString(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => ref.refresh(perfilProvider),
-                  child: const Text('Reintentar'),
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: _buildBody(context, ref, perfilState),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 2,
@@ -203,7 +69,7 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/reporte-mapa');
+              Navigator.pushReplacementNamed(context, '/municipal-reportes');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/reporte-mapa-municipal');
@@ -214,10 +80,188 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Registros'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(icon: Icon(Icons.place), label: "Mapa"),
+          BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "Reportes"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, WidgetRef ref, PerfilState perfilState) {
+    if (perfilState.isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (perfilState.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Error al cargar el perfil',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                perfilState.error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () => ref.read(perfilProvider.notifier).refrescarUsuario(),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (perfilState.usuario == null) {
+      return const Center(
+        child: Text('No se pudo cargar la información del usuario'),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(perfilProvider.notifier).refrescarUsuario(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Header con información del usuario
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    perfilState.usuario!.nombre,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'demo@email.com', // Email hardcodeado como en la imagen ya que el endpoint no devuelve el email
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Opciones del menú
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  _buildMenuOption(
+                    icon: Icons.code,
+                    iconColor: const Color(0xFF8B7CF6),
+                    title: 'Sugerencias a desarrolladores',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => PopupSugerenciaDesarrolladores(
+                          onGuardarSugerencia: _enviarSugerencia,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
+                  const SizedBox(height: 8),
+                  _buildMenuOption(
+                    icon: Icons.edit,
+                    iconColor: Colors.grey[600]!,
+                    title: 'Editar datos de perfil',
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Funcionalidad en desarrollo'),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
+                  const SizedBox(height: 8),
+                  _buildMenuOption(
+                    icon: Icons.logout,
+                    iconColor: const Color(0xFF4A90E2),
+                    title: 'Cerrar sesión',
+                    onTap: () => _handleLogout(context, ref),
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
+                  const SizedBox(height: 8),
+                  _buildMenuOption(
+                    icon: Icons.delete_forever,
+                    iconColor: const Color(0xFFE53E3E),
+                    title: 'Borrar cuenta',
+                    onTap: () {
+                      _showDeleteAccountDialog(context);
+                    },
+                    isDestructive: true,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

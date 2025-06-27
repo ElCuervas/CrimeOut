@@ -17,6 +17,7 @@ import 'package:frontend/features/crear_municipal/presentation/screens/crear_cue
 import 'package:frontend/features/admin_reportes/presentation/screens/admin_reportes_sospechosos_screen.dart';
 import 'package:frontend/features/municipal_reports/presentation/screens/municipal_mapa_reportes_screen.dart';
 import 'package:frontend/features/perfil/presentation/screens/perfil_usuario_municipal_screen.dart';
+import 'package:frontend/features/perfil/presentation/screens/perfil_usuario_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 
@@ -64,6 +65,8 @@ class CrimeOutApp extends StatelessWidget {
     '/admin-create-municipal': (context) => const CrearCuentaMunicipalScreen(),
     '/admin-reportes': (context) => const AdminReportesSospechososScreen(),
     '/perfil-usuario-municipal': (context) => const PerfilUsuarioMunicipalScreen(),
+    '/perfil-usuario-comun': (context) => const PerfilUsuarioScreen(),
+
   },
 );
   }

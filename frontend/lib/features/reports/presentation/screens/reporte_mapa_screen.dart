@@ -206,7 +206,7 @@ Future<void> _handleLogout(BuildContext context) async {
               Navigator.pushReplacementNamed(context, '/historial-reportes');
               break;
             case 2:
-              _handleLogout(context); // Llamada sin await
+              Navigator.pushReplacementNamed(context, '/perfil-usuario-comun');
               break;
           }
         },
