@@ -17,7 +17,7 @@ class AdminHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
-  String _rolSeleccionado = 'municipal';
+  String _rolSeleccionado = 'USUARIO';
   String _nombreBuscado = '';
   final _nombreController = TextEditingController();
 
@@ -76,37 +76,21 @@ Widget build(BuildContext context) {
                 const SizedBox(height: 24),
 
                 // 🟩 Filtro por rol
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DropdownButton<String>(
-                      value: _rolSeleccionado,
-                      items: const [
-                        DropdownMenuItem(value: 'municipal', child: Text('Municipales')),
-                        DropdownMenuItem(value: 'común', child: Text('Usuarios Comunes')),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _rolSeleccionado = value;
-                            _nombreBuscado = '';
-                            _nombreController.clear();
-                          });
-                        }
-                      },
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/admin-create-municipal');
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Nueva cuenta municipal'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6B49F6),
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
+                DropdownButton<String>(
+                  value: _rolSeleccionado,
+                  items: const [
+                    DropdownMenuItem(value: 'MUNICIPAL', child: Text('Municipales')),
+                    DropdownMenuItem(value: 'USUARIO', child: Text('Usuarios Comunes')),
                   ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _rolSeleccionado = value;
+                        _nombreBuscado = '';
+                        _nombreController.clear();
+                      });
+                    }
+                  },
                 ),
                 const SizedBox(height: 12),
 
@@ -131,14 +115,28 @@ Widget build(BuildContext context) {
                       return Column(
                         children: usuarios.map((u) => UsuarioItemTile(usuario: u)).toList(),
                       );
-                    } else if (usuarios is UsuarioAdmin) {
-                      return UsuarioItemTile(usuario: usuarios);
                     } else {
                       return const Text('Sin resultados');
                     }
                   },
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Text('Error: $e'),
+                  
+                ),
+                // 🟪 Botón debajo de la lista de usuarios
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/admin-create-municipal');
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Nueva cuenta municipal'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6B49F6),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -82,7 +82,7 @@ Widget build(BuildContext context) {
             Navigator.pushReplacementNamed(context, '/municipal-reportes');
             break;
           case 'ADMIN':
-            Navigator.pushReplacementNamed(context, '/vista-admin');
+            Navigator.pushReplacementNamed(context, '/admin-home');
             break;
           default:
             ScaffoldMessenger.of(context).showSnackBar(

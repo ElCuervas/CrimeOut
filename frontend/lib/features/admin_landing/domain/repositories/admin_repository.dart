@@ -9,5 +9,5 @@ abstract class AdminRepository {
   Future<List<UsuarioAdmin>> obtenerUsuariosPorRol(String rol);
 
   /// Obtener un usuario por nombre
-  Future<UsuarioAdmin> obtenerUsuarioPorNombre(String nombre);
+  Future<List<UsuarioAdmin>> getUsuarioPorNombre(String nombre);
 }

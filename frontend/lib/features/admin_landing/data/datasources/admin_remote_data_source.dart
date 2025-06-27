@@ -46,20 +46,21 @@ class AdminRemoteDataSource {
   }
 
   /// 🔹 Obtener usuario por nombre
-  Future<UsuarioAdminModel> fetchUsuarioPorNombre(String nombre) async {
-    final token = await _storage.read(key: 'jwt_token');
-    final response = await _dio.get(
-      '$_baseUrl/list/usuarios-nombre/$nombre',
-      options: Options(headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      }),
-    );
+  Future<List<UsuarioAdminModel>> fetchUsuarioPorNombre(String nombre) async {
+  final token = await _storage.read(key: 'jwt_token');
+  final response = await _dio.get(
+    '$_baseUrl/list/usuarios-nombre/$nombre',
+    options: Options(headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    }),
+  );
 
-    if (response.statusCode == 200) {
-      return UsuarioAdminModel.fromJson(response.data);
-    } else {
-      throw Exception('Usuario no encontrado');
-    }
+  if (response.statusCode == 200) {
+    final List data = response.data;
+    return data.map((e) => UsuarioAdminModel.fromJson(e)).toList();
+  } else {
+    throw Exception('Usuario no encontrado');
   }
+}
 }

@@ -5,7 +5,7 @@ class RegistroMunicipalModel extends RegistroMunicipal {
     required super.correo,
     required super.nombre,
     required super.rut,
-    required super.contrasena,
+    required super.password,
     required super.rol,
   });
 
@@ -14,7 +14,7 @@ class RegistroMunicipalModel extends RegistroMunicipal {
       correo: json['correo'],
       nombre: json['nombre'],
       rut: json['rut'],
-      contrasena: json['contrasena'],
+      password: json['password'],
       rol: json['rol'],
     );
   }
@@ -24,7 +24,7 @@ class RegistroMunicipalModel extends RegistroMunicipal {
       'correo': correo,
       'nombre': nombre,
       'rut': rut,
-      'contrasena': contrasena,
+      'password': password,
       'rol': rol,
     };
   }
@@ -35,7 +35,7 @@ class RegistroMunicipalModel extends RegistroMunicipal {
       correo: entity.correo,
       nombre: entity.nombre,
       rut: entity.rut,
-      contrasena: entity.contrasena,
+      password: entity.password,
       rol: entity.rol,
     );
   }

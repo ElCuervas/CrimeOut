@@ -23,8 +23,7 @@ class AdminRepositoryImpl implements AdminRepository {
   }
 
   @override
-  Future<UsuarioAdmin> obtenerUsuarioPorNombre(String nombre) async {
-    final UsuarioAdminModel data = await remoteDataSource.fetchUsuarioPorNombre(nombre);
-    return data;
+  Future<List<UsuarioAdminModel>> getUsuarioPorNombre(String nombre) {
+    return remoteDataSource.fetchUsuarioPorNombre(nombre);
   }
 }

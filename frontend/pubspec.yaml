@@ -80,6 +80,7 @@ flutter:
     - icons/microtrafico.png
     - icons/topo_wave.png
     - .env
+    - icons/topo_clean.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

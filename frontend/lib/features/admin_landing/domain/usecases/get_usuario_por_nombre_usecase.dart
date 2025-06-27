@@ -6,7 +6,7 @@ class GetUsuarioPorNombreUseCase {
 
   GetUsuarioPorNombreUseCase(this.repository);
 
-  Future<UsuarioAdmin> execute(String nombre) {
-    return repository.obtenerUsuarioPorNombre(nombre);
+  Future<List<UsuarioAdmin>> execute(String nombre) {
+    return repository.getUsuarioPorNombre(nombre);
   }
 }

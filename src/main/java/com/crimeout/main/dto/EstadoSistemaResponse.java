@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstadoSistemaResponse {
-    private Integer total_ususarios;
+    private Integer total_usuarios;
     private Integer total_reportes;
     private Integer reportes_sospechosos;
 }
