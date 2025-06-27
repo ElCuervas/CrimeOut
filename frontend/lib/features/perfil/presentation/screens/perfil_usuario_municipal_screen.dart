@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../providers/perfil_provider.dart';
 import '../../data/services/perfil_service.dart';
 import 'package:frontend/core/global_widgets/popup_sugerencia_desarrolladores.dart';
+import 'package:frontend/core/global_widgets/popup_editar_perfil.dart';
 
 class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
   const PerfilUsuarioMunicipalScreen({super.key});
@@ -41,6 +42,18 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
   Future<void> _enviarSugerencia(String mensaje) async {
     try {
       await PerfilService.enviarSugerencia(mensaje);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _actualizarPerfil(String nombre, String correo, String contrasena, WidgetRef ref) async {
+    try {
+      await ref.read(perfilProvider.notifier).actualizarUsuario(
+        nombre: nombre,
+        correo: correo,
+        contrasena: contrasena,
+      );
     } catch (e) {
       rethrow;
     }
@@ -229,9 +242,12 @@ class PerfilUsuarioMunicipalScreen extends ConsumerWidget {
                     iconColor: Colors.grey[600]!,
                     title: 'Editar datos de perfil',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Funcionalidad en desarrollo'),
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => PopupEditarPerfil(
+                          nombreActual: perfilState.usuario!.nombre,
+                          onGuardarCambios: _actualizarPerfil,
                         ),
                       );
                     },

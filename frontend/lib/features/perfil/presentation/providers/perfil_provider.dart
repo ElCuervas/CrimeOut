@@ -91,6 +91,36 @@ class PerfilNotifier extends StateNotifier<PerfilState> {
     await cargarUsuarioActual(force: true);
   }
 
+  Future<void> actualizarUsuario({
+    required String nombre,
+    required String correo,
+    required String contrasena,
+  }) async {
+    try {
+      final userIdString = await storage.read(key: 'user_id');
+      if (userIdString == null) {
+        throw Exception('No se encontró el ID del usuario');
+      }
+      
+      final userId = int.tryParse(userIdString);
+      if (userId == null) {
+        throw Exception('ID de usuario inválido');
+      }
+
+      await PerfilService.actualizarUsuario(
+        userId: userId,
+        nombre: nombre,
+        correo: correo,
+        contrasena: contrasena,
+      );
+
+      // Después de actualizar, refrescar los datos del usuario
+      await cargarUsuarioActual(force: true);
+    } catch (e) {
+      throw Exception('Error al actualizar usuario: $e');
+    }
+  }
+
   void limpiarDatos() {
     state = const PerfilState();
   }

@@ -118,4 +118,63 @@ class PerfilService {
       throw Exception('Error de conexión: $e');
     }
   }
+
+  static Future<void> actualizarUsuario({
+    required int userId,
+    required String nombre,
+    required String correo,
+    required String contrasena,
+  }) async {
+    try {
+      final token = await storage.read(key: 'jwt_token');
+      
+      if (token == null) {
+        throw Exception('No hay token de autenticación');
+      }
+
+      final requestBody = {
+        'correo': correo,
+        'nombre': nombre,
+        'contrasena': contrasena,
+      };
+
+      final response = await http.patch(
+        Uri.parse('$baseUrl/usuario/$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(requestBody),
+      );
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('Response Headers: ${response.headers}');
+
+      if (response.statusCode == 200) {
+        // Usuario actualizado exitosamente
+        if (response.body.isNotEmpty) {
+          try {
+            final data = json.decode(response.body);
+            print('Parsed JSON: $data');
+          } catch (e) {
+            print('Error parsing JSON: $e');
+            // Si no se puede parsear como JSON pero el status es 200, considerarlo exitoso
+          }
+        }
+        return;
+      } else if (response.statusCode == 404) {
+        try {
+          final errorData = json.decode(response.body);
+          throw Exception(errorData['message'] ?? 'Usuario no encontrado');
+        } catch (e) {
+          throw Exception('Usuario no encontrado');
+        }
+      } else {
+        throw Exception('Error al actualizar usuario: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
 }
