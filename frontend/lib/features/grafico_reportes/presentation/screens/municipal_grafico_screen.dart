@@ -38,7 +38,10 @@ class _MunicipalGraficoScreenState extends ConsumerState<MunicipalGraficoScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gráfico de Reportes'),
+        title: const Text(
+          'Gráfico de Reportes',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xFF6B49F6),
       ),
       body: Padding(
@@ -48,16 +51,37 @@ class _MunicipalGraficoScreenState extends ConsumerState<MunicipalGraficoScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                children: [
-                  _buildResumen('Basurales Reportados', datos.basural),
-                  _buildResumen('Maltrato Animal', datos.maltratoAnimal),
-                  _buildResumen('Microtráfico Confirmado', datos.microtrafico),
-                  _buildResumen('Actividad ilícita', datos.actividadIlicita),
-                ],
-              ),
+              Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildResumen('Basurales', datos.basural, Color(0xFFC3831D)),
+                            const SizedBox(height: 24),
+                            _buildResumen('Microtráfico', datos.microtrafico, Color(0xFFE14433)),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 1,
+                        height: 80,
+                        margin: const EdgeInsets.symmetric(horizontal: 12),
+                        color: const Color(0xFFDDDDDD), // línea divisoria gris clara
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildResumen('Maltrato Animal', datos.maltratoAnimal, Color(0xFF867DFF)),
+                            const SizedBox(height: 24),
+                            _buildResumen('Actividad ilícita', datos.actividadIlicita, Color(0xFFE1CF47)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
               const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,32 +132,47 @@ class _MunicipalGraficoScreenState extends ConsumerState<MunicipalGraficoScreen>
     );
   }
 
-  Widget _buildResumen(String titulo, int cantidad) {
+  Widget _buildResumen(String titulo, int cantidad, Color color) {
   return SizedBox(
-    width: MediaQuery.of(context).size.width * 0.45, // 2 por fila
+    width: MediaQuery.of(context).size.width * 0.45,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          titulo,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF6F6F6F), // gris tenue
-          ),
+        Row(
+          children: [
+            Text(
+              titulo,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
+            Container(
+              width: 12,
+              height: 12,
+              margin: const EdgeInsets.only(left: 8),
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.rectangle,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
         Text(
           NumberFormat.decimalPattern('es').format(cantidad),
           style: const TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2E2E2E), // negro grisáceo
+            fontWeight: FontWeight.w900,
+            color: Color(0xFF2E2E2E),
           ),
         ),
         const Text(
           'Reportes',
           style: TextStyle(
             fontSize: 13,
+            fontWeight: FontWeight.w600,
             color: Color(0xFF6F6F6F),
           ),
         ),

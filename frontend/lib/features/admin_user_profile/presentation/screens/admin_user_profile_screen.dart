@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/admin_global_widgets/admin_banner_header.dart';
 import '../providers/get_usuario_con_reportes_provider.dart';
 import '../widgets/reporte_historial_item.dart';
+import 'package:frontend/core/constants/admin_global_widgets/admin_bottom_navigation.dart';
 
 class AdminUserProfileScreen extends ConsumerWidget {
   const AdminUserProfileScreen({super.key});
@@ -67,12 +68,13 @@ class AdminUserProfileScreen extends ConsumerWidget {
             // Lista de reportes
             const Text('Reportes generados', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            ...usuario.reportes.map((r) => ReporteHistorialItem(reporte: r)).toList(),
+            ...usuario.reportes.map((r) => ReporteHistorialItem(reporte:r)).toList(),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error al cargar datos: $e')),
       ),
+            bottomNavigationBar: const AdminBottomNavigationBar(currentIndex:1),
     );
   }
 }

@@ -26,11 +26,11 @@ class ReporteSospechosoCard extends StatelessWidget {
             Column(
               children: [
                 Image.asset(
-                  'assets/icons/${reporte.tipoReporte.toLowerCase().replaceAll(' ', '_')}.png',
+                  'icons/${reporte.tipoReporte.toLowerCase().replaceAll(' ', '_')}_circulo.png',
                   width: 32,
                   height: 32,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 25),
                 Image.network(
                   reporte.imagenUrl,
                   width: 40,
@@ -47,7 +47,7 @@ class ReporteSospechosoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Usuario',
+                    ' Descripción',
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
                   const SizedBox(height: 4),

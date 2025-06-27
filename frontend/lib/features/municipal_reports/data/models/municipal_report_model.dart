@@ -16,10 +16,10 @@ class ReporteMunicipalModel extends ReporteMunicipal {
     return ReporteMunicipalModel(
       idReporte: json['idReporte'], // 👈 debe venir desde el backend
       tipoReporte: json['tipoReporte'],
-      ubicacion: json['ubicacion'],
+      ubicacion: (json['ubicacion'] as List).join(', '),
       fecha: DateTime.parse(json['fecha']),
-      imagenUrl: json['imagenUrl'],
-      detalles: json['detalles'],
+      imagenUrl: json['imagen'] ?? '',
+      detalles: json['detalles'] ?? '',
       confiable: json['confiable'],
       solucionado: json['solucionado'],
     );

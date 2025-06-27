@@ -41,7 +41,7 @@ class _GraficoReportePieChartState extends State<GraficoReportePieChart> {
         sections: [
               PieChartSectionData(
                 value: data.microtrafico.toDouble(),
-                title: _touchedIndex == 0 ? 'Microtráfico: ${data.microtrafico}' : '',
+                title: _touchedIndex == 0 ? 'Cantidad: ${data.microtrafico}' : '',
                 color: const Color(0xFFE14433), // Microtráfico = rojo
                 radius: _touchedIndex == 0 ? 90 : 70,
                 titleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

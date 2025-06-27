@@ -1,6 +1,6 @@
 class ReporteUsuario {
   final String tipoReporte;
-  final String ubicacion;
+  final List<double> ubicacion;
   final DateTime fecha;
   final String imagenUrl;
   final String detalles;

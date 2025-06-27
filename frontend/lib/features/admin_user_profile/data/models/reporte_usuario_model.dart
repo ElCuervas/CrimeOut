@@ -14,10 +14,10 @@ class ReporteUsuarioModel extends ReporteUsuario {
   factory ReporteUsuarioModel.fromJson(Map<String, dynamic> json) {
     return ReporteUsuarioModel(
       tipoReporte: json['tipoReporte'],
-      ubicacion: json['ubicacion'],
+      ubicacion: List<double>.from(json['ubicacion'].map((x) => x.toDouble())),
       fecha: DateTime.parse(json['fecha']),
-      imagenUrl: json['imagenUrl'],
-      detalles: json['detalles'],
+      imagenUrl: json['imagen'] ?? '',
+      detalles: json['detalles'] ?? '',
       confiable: json['confiable'],
       solucionado: json['solucionado'],
     );

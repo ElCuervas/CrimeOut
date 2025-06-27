@@ -21,7 +21,7 @@ class ReporteHistorialItem extends StatelessWidget {
           Column(
             children: [
               Image.asset(
-                'icons/${reporte.tipoReporte.toLowerCase()}.png',
+                'icons/${reporte.tipoReporte.toLowerCase()}_circulo.png',
                 width: 32,
                 height: 32,
                 errorBuilder: (context, error, stackTrace) => const Icon(Icons.report),
@@ -37,26 +37,11 @@ class ReporteHistorialItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Text(
-                    reporte.ubicacion,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
                 const SizedBox(height: 6),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    reporte.detalles,
+                    reporte.detalles.isNotEmpty ? reporte.detalles : 'No tiene detalles',
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),
