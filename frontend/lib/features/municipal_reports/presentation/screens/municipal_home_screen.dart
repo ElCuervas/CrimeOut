@@ -74,12 +74,10 @@ class MunicipalHomeScreen extends StatelessWidget {
               // Ya estás en esta vista
               break;
             case 1:
-              Navigator.pushReplacementNamed(context, '/reporte-mapa');
+              Navigator.pushReplacementNamed(context, '/reporte-mapa-municipal');
               break;
             case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sección Perfil no disponible aún')),
-              );
+              Navigator.pushReplacementNamed(context, '/perfil-usuario-municipal');
               break;
           }
         },

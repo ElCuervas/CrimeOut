@@ -16,6 +16,9 @@ import 'package:frontend/features/admin_landing/presentation/screens/admin_home_
 import 'package:frontend/features/crear_municipal/presentation/screens/crear_cuenta_municipal_screen.dart';
 import 'package:frontend/features/admin_reportes/presentation/screens/admin_reportes_sospechosos_screen.dart';
 import 'package:frontend/features/admin_user_profile/presentation/screens/admin_user_profile_screen.dart';
+import 'package:frontend/features/municipal_reports/presentation/screens/municipal_mapa_reportes_screen.dart';
+import 'package:frontend/features/perfil/presentation/screens/perfil_usuario_municipal_screen.dart';
+import 'package:frontend/features/perfil/presentation/screens/perfil_usuario_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 
@@ -58,10 +61,14 @@ class CrimeOutApp extends StatelessWidget {
     '/lista-reportes-municipal': (context) =>  MunicipalListaReportesScreen(),
     '/municipal-reportes': (context) => const MunicipalHomeScreen(),
     '/municipal-grafico': (context) => const MunicipalGraficoScreen(),
+    '/reporte-mapa-municipal': (context) => const MunicipalMapaReportesScreen(),
     '/admin-home': (context) => const AdminHomeScreen(),
     '/admin-create-municipal': (context) => const CrearCuentaMunicipalScreen(),
     '/admin-reportes': (context) => const AdminReportesSospechososScreen(),
     '/admin-user-profile':(context) => const AdminUserProfileScreen(),
+    '/perfil-usuario-municipal': (context) => const PerfilUsuarioMunicipalScreen(),
+    '/perfil-usuario-comun': (context) => const PerfilUsuarioScreen(),
+
   },
 );
   }

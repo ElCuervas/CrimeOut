@@ -75,9 +75,7 @@ class _HistorialReportesScreenState extends ConsumerState<HistorialReportesScree
               Navigator.pushReplacementNamed(context, '/historial-reportes');
               break;
             case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sección Perfil no disponible aún')),
-              );
+              Navigator.pushReplacementNamed(context, '/perfil-usuario-comun');
               break;
           }
         },
