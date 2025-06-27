@@ -10,6 +10,7 @@ import 'package:frontend/core/utils/iconos_reportes.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/core/utils/jwt_utils.dart';
 import '../widgets/botones_reporte.dart';
+import 'package:frontend/core/global_widgets/popup_info_reportes.dart';
 
 class ReporteMapaScreen extends ConsumerStatefulWidget {
   const ReporteMapaScreen({super.key});
@@ -186,7 +187,7 @@ Future<void> _handleLogout(BuildContext context) async {
             right: 16,
             child: FloatingActionButton.small(
               heroTag: 'btnInfo',
-              onPressed: () {},
+              onPressed: () => PopupInfoReportes.mostrar(context),
               child: const Icon(Icons.lightbulb),
             ),
           ),
